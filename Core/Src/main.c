@@ -167,7 +167,7 @@ int main(void)
 	  HAL_Delay(10);
 	  MagnetometerWerteAuslesen(&x_axis_Mag, &y_axis_Mag, &z_axis_Mag);
 	  HAL_Delay(10);
-	  HAL_Delay(5);
+
 
 	  if (z_axis >= 0){
 		  // z-Achse wird GEGEN Uhrzeigersinn gedreht

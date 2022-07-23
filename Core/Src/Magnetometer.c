@@ -63,7 +63,7 @@ void MagnetometerWerteAuslesen (int16_t *x_axis_Mag, int16_t *y_axis_Mag, int16_
 
 
 	uint8_t buf[12]; /*ein Buffer-Array*/
-	buf[0] = FXOS8700CQ_STATUS;
+	buf[0] = M_DR_STATUS;
 	HAL_StatusTypeDef ret;
 
 

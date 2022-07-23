@@ -27,6 +27,7 @@ extern "C" {
 
 // FXOS8700CQ internal register addresses; kopiert aus Datasheet Seite 25
 #define FXOS8700CQ_STATUS 0x00
+#define M_DR_STATUS 0x32
 #define FXOS8700CQ_WHOAMI 0x0D
 #define FXOS8700CQ_XYZ_DATA_CFG 0x0E
 #define FXOS8700CQ_CTRL_REG1 0x2A
