@@ -7,23 +7,23 @@
 #include <stdio.h>
 #include <string.h>
 #include <gyro.h>
+#include <stdbool.h>
 
 
-int InitialisiereGyro(){
+bool InitialisiereGyro(){
 	HAL_StatusTypeDef ret;
 	uint8_t buf[15];
+
 	//konfiguriere Control Register 1
 
 	buf[0] = CTRL_REG1;
 	buf[1] = 0b00001111; //Unused	Reset 0/1	SelfTest 0/1	Output Data Rate 011 für 100 Hz	Active Mode gewählt mit 11
-	//buf[1] = 0b11101110; //invertiert
+
 	ret = HAL_I2C_Master_Transmit(&hi2c1, ADDR_Gyro, buf, 2, HAL_MAX_DELAY);
+
 	HAL_Delay(80);
 
-
-
-	uint8_t GDI;
-	uint8_t x;
+	//lese Device Identifier
 
  	buf[0] = WHO_AM_I_Gyro_Reg;
 	ret = HAL_I2C_Master_Transmit(&hi2c1, ADDR_Gyro, buf, 1, 1000);
@@ -32,18 +32,19 @@ int InitialisiereGyro(){
 
 		ret = HAL_I2C_Master_Receive(&hi2c1, ADDR_Gyro, buf, 1, HAL_MAX_DELAY); /*empfange den Device Identifier*/
 		HAL_Delay(80);
-		if ( ret == HAL_OK ) {
-			GDI = buf[0];
+		if ( ret == HAL_OK && buf[0] == GyroDeviceID) {
+			return true;
+
 		}else{
 			strcpy((char*)buf, "INIT ERR Read");
-			GDI = 0x01;
+			return false;
 		}
 
 	}else{
 		strcpy((char*)buf, "INIT ERR Send");
-		GDI = 0x01;
+		return false;
 	}
-return GDI;
+
 }
 
 void gyroWerteAuslesen (int16_t *x_axis, int16_t *y_axis, int16_t *z_axis){

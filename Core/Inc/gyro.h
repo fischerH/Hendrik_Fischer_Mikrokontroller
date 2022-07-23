@@ -7,7 +7,7 @@
 
 #ifndef INC_GYRO_H_
 #define INC_GYRO_H_
-
+#include <stdbool.h>
 
 
 #ifndef Gyro_Treiber_H
@@ -36,7 +36,7 @@ extern 	I2C_HandleTypeDef hi2c1;
 
 void gyroWerteAuslesen (int16_t *x_axis, int16_t *y_axis, int16_t *z_axis);
 
-int InitialisiereGyro();
+bool InitialisiereGyro();
 
 #ifdef __cplusplus
 }

@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <Magnetometer.h>
+#include <stdbool.h>
 
 
 int InitialisiereMagnetometer(){

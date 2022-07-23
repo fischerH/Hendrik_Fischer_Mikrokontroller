@@ -25,7 +25,7 @@
 #include <string.h>
 #include <gyro.h>
 #include <Magnetometer.h>
-
+#include <stdbool.h>
 
 /* USER CODE END Includes */
 
@@ -121,16 +121,16 @@ int main(void)
 
 //Initialisiere die Sensoren
 
-  uint8_t GyroDeviceIdentifier;
+  bool Gyro_Init_Check;
   uint8_t MagnetometerDeviceIdentifier;
 
-  GyroDeviceIdentifier = InitialisiereGyro();
+  Gyro_Init_Check = InitialisiereGyro();
 
 
   MagnetometerDeviceIdentifier = InitialisiereMagnetometer();
 
 
-  if (GyroDeviceIdentifier == GyroDeviceID){
+  if (Gyro_Init_Check == true){
 	  //I2C-Kommunikation funktioniert
 	  //blinke grüne LED 3x
 	  uint8_t x;

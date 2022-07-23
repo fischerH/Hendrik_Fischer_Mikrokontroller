@@ -1,2 +1,2 @@
-../Core/Src/Gyro.c:12:5:InitialisiereGyro	48	static
-../Core/Src/Gyro.c:49:6:gyroWerteAuslesen	64	static
+../Core/Src/Gyro.c:13:6:InitialisiereGyro	40	static
+../Core/Src/Gyro.c:50:6:gyroWerteAuslesen	64	static
