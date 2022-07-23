@@ -122,12 +122,12 @@ int main(void)
 //Initialisiere die Sensoren
 
   bool Gyro_Init_Check;
-  uint8_t MagnetometerDeviceIdentifier;
+  bool Magnetometer_Init_Check;
 
   Gyro_Init_Check = InitialisiereGyro();
 
 
-  MagnetometerDeviceIdentifier = InitialisiereMagnetometer();
+  Magnetometer_Init_Check = InitialisiereMagnetometer();
 
 
   if (Gyro_Init_Check == true){
@@ -136,20 +136,22 @@ int main(void)
 	  uint8_t x;
 	  for (x = 0; x <= 3; ++x){
 		  __HAL_TIM_SET_COMPARE(&htim3,TIM_CHANNEL_4,511);
-		  HAL_Delay(1000);
+		  HAL_Delay(500);
 		  __HAL_TIM_SET_COMPARE(&htim3,TIM_CHANNEL_4,0);
+		  HAL_Delay(500);
 		    }
 
   }
 
-  if (MagnetometerDeviceIdentifier == FXOS8700CQ_WHOAMI_VAL){
+  if (Magnetometer_Init_Check == true){
 	  //I2C-Kommunikation funktioniert
 	  //blinke blaue LED 3x
 	  uint8_t x;
 	  for (x = 0; x <= 3; ++x){
 		  __HAL_TIM_SET_COMPARE(&htim3,TIM_CHANNEL_3,511);
-		  HAL_Delay(1000);
+		  HAL_Delay(500);
 		  __HAL_TIM_SET_COMPARE(&htim3,TIM_CHANNEL_3,0);
+		  HAL_Delay(500);
 		    }
 
   }

@@ -20,6 +20,7 @@ extern "C" {
 #endif
 
 #include "stm32f0xx_hal.h"
+#include <stdbool.h>
 
 #define ADDR_Magnetometer  0x1F << 1 //Initialisiere Adresse von Magnetometer Sensor. Wert aus Datenblatt. Shift ein Bit da I2C 7 Bit Adresse verwendet und letztes Bit 0 sein muss.
 
@@ -36,7 +37,7 @@ extern "C" {
 extern 	I2C_HandleTypeDef hi2c1;
 
 
-int InitialisiereMagnetometer();
+bool InitialisiereMagnetometer();
 void MagnetometerWerteAuslesen (int16_t *x_axis_Mag, int16_t *y_axis_Mag, int16_t *z_axis_Mag);
 
 #ifdef __cplusplus

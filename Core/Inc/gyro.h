@@ -7,7 +7,7 @@
 
 #ifndef INC_GYRO_H_
 #define INC_GYRO_H_
-#include <stdbool.h>
+
 
 
 #ifndef Gyro_Treiber_H
@@ -20,6 +20,7 @@ extern "C" {
 #endif
 
 #include "stm32f0xx_hal.h"
+#include <stdbool.h>
 
 
 

@@ -11,7 +11,7 @@
 #include <stdbool.h>
 
 
-int InitialisiereMagnetometer(){
+bool InitialisiereMagnetometer(){
 	HAL_StatusTypeDef ret;
 	uint8_t buf[15];
 
@@ -30,30 +30,27 @@ int InitialisiereMagnetometer(){
 	buf[1] = 0b00010001;
 	ret = HAL_I2C_Master_Transmit(&hi2c1, ADDR_Magnetometer, buf, 2, HAL_MAX_DELAY);
 
-
-	uint8_t MagnetometerDeviceIdentifier;
-
+	//checke den Device Identifier
 
 	buf[0] = FXOS8700CQ_WHOAMI;
-		ret = HAL_I2C_Master_Transmit(&hi2c1, ADDR_Magnetometer, buf, 1, HAL_MAX_DELAY);
-		HAL_Delay(80);
-		if ( ret == HAL_OK ) {
+	ret = HAL_I2C_Master_Transmit(&hi2c1, ADDR_Magnetometer, buf, 1, 1000);
+	HAL_Delay(80);
+	if ( ret == HAL_OK ) {
 
-			ret = HAL_I2C_Master_Receive(&hi2c1, ADDR_Magnetometer, buf, 1, HAL_MAX_DELAY); /*empfange den Device Identifier*/
-			HAL_Delay(80);
-			if ( ret == HAL_OK ) {
-				MagnetometerDeviceIdentifier = buf[0];
-			}else{
-				strcpy((char*)buf, "INIT ERR Read");
-				MagnetometerDeviceIdentifier = 0xFF;
-			}
+		ret = HAL_I2C_Master_Receive(&hi2c1, ADDR_Magnetometer, buf, 1, HAL_MAX_DELAY); /*empfange den Device Identifier*/
+		HAL_Delay(80);
+		if ( ret == HAL_OK && buf[0] == FXOS8700CQ_WHOAMI_VAL) {
+			return true;
 
 		}else{
-			strcpy((char*)buf, "INIT ERR Send");
-			MagnetometerDeviceIdentifier = 0xFF;
+			strcpy((char*)buf, "INIT ERR Read");
+			return false;
 		}
 
-return MagnetometerDeviceIdentifier;
+	}else{
+		strcpy((char*)buf, "INIT ERR Send");
+		return false;
+	}
 }
 
 

@@ -101,6 +101,7 @@ Discarded input sections
  .group         0x0000000000000000        0xc ./Core/Src/Gyro.o
  .group         0x0000000000000000        0xc ./Core/Src/Gyro.o
  .group         0x0000000000000000        0xc ./Core/Src/Gyro.o
+ .group         0x0000000000000000        0xc ./Core/Src/Gyro.o
  .text          0x0000000000000000        0x0 ./Core/Src/Gyro.o
  .data          0x0000000000000000        0x0 ./Core/Src/Gyro.o
  .bss           0x0000000000000000        0x0 ./Core/Src/Gyro.o
@@ -318,6 +319,7 @@ Discarded input sections
  .group         0x0000000000000000        0xc ./Core/Src/main.o
  .group         0x0000000000000000        0xc ./Core/Src/main.o
  .group         0x0000000000000000        0xc ./Core/Src/main.o
+ .group         0x0000000000000000        0xc ./Core/Src/main.o
  .text          0x0000000000000000        0x0 ./Core/Src/main.o
  .data          0x0000000000000000        0x0 ./Core/Src/main.o
  .bss           0x0000000000000000        0x0 ./Core/Src/main.o
@@ -383,7 +385,9 @@ Discarded input sections
  .debug_macro   0x0000000000000000      0x145 ./Core/Src/main.o
  .debug_macro   0x0000000000000000       0x16 ./Core/Src/main.o
  .debug_macro   0x0000000000000000       0x20 ./Core/Src/main.o
+ .debug_macro   0x0000000000000000       0x10 ./Core/Src/main.o
  .debug_macro   0x0000000000000000       0x22 ./Core/Src/main.o
+ .debug_macro   0x0000000000000000       0x2e ./Core/Src/main.o
  .group         0x0000000000000000        0xc ./Core/Src/stm32f0xx_hal_msp.o
  .group         0x0000000000000000        0xc ./Core/Src/stm32f0xx_hal_msp.o
  .group         0x0000000000000000        0xc ./Core/Src/stm32f0xx_hal_msp.o
@@ -2902,13 +2906,13 @@ LOAD c:/st/stm32cubeide_1.9.0/stm32cubeide/plugins/com.st.stm32cube.ide.mcu.exte
                 0x00000000080004b8       0xec ./Core/Src/Gyro.o
                 0x00000000080004b8                gyroWerteAuslesen
  .text.InitialisiereMagnetometer
-                0x00000000080005a4       0xf4 ./Core/Src/Magnetometer.o
+                0x00000000080005a4       0xe0 ./Core/Src/Magnetometer.o
                 0x00000000080005a4                InitialisiereMagnetometer
  .text.MagnetometerWerteAuslesen
-                0x0000000008000698       0xe8 ./Core/Src/Magnetometer.o
-                0x0000000008000698                MagnetometerWerteAuslesen
- .text.main     0x0000000008000780      0x19c ./Core/Src/main.o
-                0x0000000008000780                main
+                0x0000000008000684       0xe8 ./Core/Src/Magnetometer.o
+                0x0000000008000684                MagnetometerWerteAuslesen
+ .text.main     0x000000000800076c      0x1b0 ./Core/Src/main.o
+                0x000000000800076c                main
  .text.SystemClock_Config
                 0x000000000800091c       0xc2 ./Core/Src/main.o
                 0x000000000800091c                SystemClock_Config
@@ -3316,41 +3320,41 @@ LOAD c:/st/stm32cubeide_1.9.0/stm32cubeide/plugins/com.st.stm32cube.ide.mcu.exte
 LOAD c:/st/stm32cubeide_1.9.0/stm32cubeide/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.0.202111181127/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/../../../../arm-none-eabi/lib/thumb/v6-m/nofp\libm.a
 LOAD c:/st/stm32cubeide_1.9.0/stm32cubeide/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.10.3-2021.10.win32_1.0.0.202111181127/tools/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v6-m/nofp\libgcc.a
 
-.debug_info     0x0000000000000000     0xbe2c
+.debug_info     0x0000000000000000     0xbe24
  .debug_info    0x0000000000000000      0x75d ./Core/Src/Gyro.o
- .debug_info    0x000000000000075d      0x765 ./Core/Src/Magnetometer.o
- .debug_info    0x0000000000000ec2     0x13b3 ./Core/Src/main.o
- .debug_info    0x0000000000002275      0xd03 ./Core/Src/stm32f0xx_hal_msp.o
- .debug_info    0x0000000000002f78      0x117 ./Core/Src/stm32f0xx_it.o
- .debug_info    0x000000000000308f      0x269 ./Core/Src/system_stm32f0xx.o
- .debug_info    0x00000000000032f8       0x22 ./Core/Startup/startup_stm32f051r8tx.o
- .debug_info    0x000000000000331a      0x6de ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal.o
- .debug_info    0x00000000000039f8      0x711 ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_cortex.o
- .debug_info    0x0000000000004109      0x621 ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_gpio.o
- .debug_info    0x000000000000472a     0x2149 ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_i2c.o
- .debug_info    0x0000000000006873      0x89a ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_i2c_ex.o
- .debug_info    0x000000000000710d      0x89f ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_rcc.o
- .debug_info    0x00000000000079ac      0x389 ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_rcc_ex.o
- .debug_info    0x0000000000007d35     0x2b69 ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_tim.o
- .debug_info    0x000000000000a89e     0x158e ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_tim_ex.o
+ .debug_info    0x000000000000075d      0x75d ./Core/Src/Magnetometer.o
+ .debug_info    0x0000000000000eba     0x13b3 ./Core/Src/main.o
+ .debug_info    0x000000000000226d      0xd03 ./Core/Src/stm32f0xx_hal_msp.o
+ .debug_info    0x0000000000002f70      0x117 ./Core/Src/stm32f0xx_it.o
+ .debug_info    0x0000000000003087      0x269 ./Core/Src/system_stm32f0xx.o
+ .debug_info    0x00000000000032f0       0x22 ./Core/Startup/startup_stm32f051r8tx.o
+ .debug_info    0x0000000000003312      0x6de ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal.o
+ .debug_info    0x00000000000039f0      0x711 ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_cortex.o
+ .debug_info    0x0000000000004101      0x621 ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_gpio.o
+ .debug_info    0x0000000000004722     0x2149 ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_i2c.o
+ .debug_info    0x000000000000686b      0x89a ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_i2c_ex.o
+ .debug_info    0x0000000000007105      0x89f ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_rcc.o
+ .debug_info    0x00000000000079a4      0x389 ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_rcc_ex.o
+ .debug_info    0x0000000000007d2d     0x2b69 ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_tim.o
+ .debug_info    0x000000000000a896     0x158e ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_tim_ex.o
 
-.debug_abbrev   0x0000000000000000     0x1d7c
+.debug_abbrev   0x0000000000000000     0x1d6b
  .debug_abbrev  0x0000000000000000      0x1be ./Core/Src/Gyro.o
- .debug_abbrev  0x00000000000001be      0x1cf ./Core/Src/Magnetometer.o
- .debug_abbrev  0x000000000000038d      0x2f8 ./Core/Src/main.o
- .debug_abbrev  0x0000000000000685      0x1ce ./Core/Src/stm32f0xx_hal_msp.o
- .debug_abbrev  0x0000000000000853       0x9f ./Core/Src/stm32f0xx_it.o
- .debug_abbrev  0x00000000000008f2      0x116 ./Core/Src/system_stm32f0xx.o
- .debug_abbrev  0x0000000000000a08       0x12 ./Core/Startup/startup_stm32f051r8tx.o
- .debug_abbrev  0x0000000000000a1a      0x23f ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal.o
- .debug_abbrev  0x0000000000000c59      0x283 ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_cortex.o
- .debug_abbrev  0x0000000000000edc      0x1bb ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_gpio.o
- .debug_abbrev  0x0000000000001097      0x254 ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_i2c.o
- .debug_abbrev  0x00000000000012eb      0x1c1 ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_i2c_ex.o
- .debug_abbrev  0x00000000000014ac      0x283 ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_rcc.o
- .debug_abbrev  0x000000000000172f      0x169 ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_rcc_ex.o
- .debug_abbrev  0x0000000000001898      0x26e ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_tim.o
- .debug_abbrev  0x0000000000001b06      0x276 ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_tim_ex.o
+ .debug_abbrev  0x00000000000001be      0x1be ./Core/Src/Magnetometer.o
+ .debug_abbrev  0x000000000000037c      0x2f8 ./Core/Src/main.o
+ .debug_abbrev  0x0000000000000674      0x1ce ./Core/Src/stm32f0xx_hal_msp.o
+ .debug_abbrev  0x0000000000000842       0x9f ./Core/Src/stm32f0xx_it.o
+ .debug_abbrev  0x00000000000008e1      0x116 ./Core/Src/system_stm32f0xx.o
+ .debug_abbrev  0x00000000000009f7       0x12 ./Core/Startup/startup_stm32f051r8tx.o
+ .debug_abbrev  0x0000000000000a09      0x23f ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal.o
+ .debug_abbrev  0x0000000000000c48      0x283 ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_cortex.o
+ .debug_abbrev  0x0000000000000ecb      0x1bb ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_gpio.o
+ .debug_abbrev  0x0000000000001086      0x254 ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_i2c.o
+ .debug_abbrev  0x00000000000012da      0x1c1 ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_i2c_ex.o
+ .debug_abbrev  0x000000000000149b      0x283 ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_rcc.o
+ .debug_abbrev  0x000000000000171e      0x169 ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_rcc_ex.o
+ .debug_abbrev  0x0000000000001887      0x26e ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_tim.o
+ .debug_abbrev  0x0000000000001af5      0x276 ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_tim_ex.o
 
 .debug_aranges  0x0000000000000000      0xc28
  .debug_aranges
@@ -3404,153 +3408,153 @@ LOAD c:/st/stm32cubeide_1.9.0/stm32cubeide/plugins/com.st.stm32cube.ide.mcu.exte
  .debug_ranges  0x0000000000000618      0x3c0 ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_tim.o
  .debug_ranges  0x00000000000009d8      0x158 ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_tim_ex.o
 
-.debug_macro    0x0000000000000000    0x12a3c
- .debug_macro   0x0000000000000000      0x355 ./Core/Src/Gyro.o
- .debug_macro   0x0000000000000355      0xa4e ./Core/Src/Gyro.o
- .debug_macro   0x0000000000000da3       0x22 ./Core/Src/Gyro.o
- .debug_macro   0x0000000000000dc5       0x4c ./Core/Src/Gyro.o
- .debug_macro   0x0000000000000e11       0x18 ./Core/Src/Gyro.o
- .debug_macro   0x0000000000000e29       0x94 ./Core/Src/Gyro.o
- .debug_macro   0x0000000000000ebd       0x3c ./Core/Src/Gyro.o
- .debug_macro   0x0000000000000ef9       0x34 ./Core/Src/Gyro.o
- .debug_macro   0x0000000000000f2d       0x16 ./Core/Src/Gyro.o
- .debug_macro   0x0000000000000f43       0x57 ./Core/Src/Gyro.o
- .debug_macro   0x0000000000000f9a       0x97 ./Core/Src/Gyro.o
- .debug_macro   0x0000000000001031      0x341 ./Core/Src/Gyro.o
- .debug_macro   0x0000000000001372       0xfd ./Core/Src/Gyro.o
- .debug_macro   0x000000000000146f       0x10 ./Core/Src/Gyro.o
- .debug_macro   0x000000000000147f       0x16 ./Core/Src/Gyro.o
- .debug_macro   0x0000000000001495       0x43 ./Core/Src/Gyro.o
- .debug_macro   0x00000000000014d8       0x34 ./Core/Src/Gyro.o
- .debug_macro   0x000000000000150c       0x10 ./Core/Src/Gyro.o
- .debug_macro   0x000000000000151c       0x58 ./Core/Src/Gyro.o
- .debug_macro   0x0000000000001574       0x71 ./Core/Src/Gyro.o
- .debug_macro   0x00000000000015e5       0x1c ./Core/Src/Gyro.o
- .debug_macro   0x0000000000001601      0x12a ./Core/Src/Gyro.o
- .debug_macro   0x000000000000172b       0x10 ./Core/Src/Gyro.o
- .debug_macro   0x000000000000173b       0x6a ./Core/Src/Gyro.o
- .debug_macro   0x00000000000017a5       0x1c ./Core/Src/Gyro.o
- .debug_macro   0x00000000000017c1       0x52 ./Core/Src/Gyro.o
- .debug_macro   0x0000000000001813       0x22 ./Core/Src/Gyro.o
- .debug_macro   0x0000000000001835       0x10 ./Core/Src/Gyro.o
- .debug_macro   0x0000000000001845       0x52 ./Core/Src/Gyro.o
- .debug_macro   0x0000000000001897       0xd5 ./Core/Src/Gyro.o
- .debug_macro   0x000000000000196c       0x1c ./Core/Src/Gyro.o
- .debug_macro   0x0000000000001988       0x3d ./Core/Src/Gyro.o
- .debug_macro   0x00000000000019c5       0x16 ./Core/Src/Gyro.o
- .debug_macro   0x00000000000019db      0x145 ./Core/Src/Gyro.o
- .debug_macro   0x0000000000001b20       0x16 ./Core/Src/Gyro.o
- .debug_macro   0x0000000000001b36       0x35 ./Core/Src/Gyro.o
- .debug_macro   0x0000000000001b6b       0x20 ./Core/Src/Gyro.o
- .debug_macro   0x0000000000001b8b       0x22 ./Core/Src/Gyro.o
- .debug_macro   0x0000000000001bad      0x12d ./Core/Src/Gyro.o
- .debug_macro   0x0000000000001cda       0x2e ./Core/Src/Gyro.o
- .debug_macro   0x0000000000001d08       0x22 ./Core/Src/Gyro.o
- .debug_macro   0x0000000000001d2a      0x103 ./Core/Src/Gyro.o
- .debug_macro   0x0000000000001e2d      0x1df ./Core/Src/Gyro.o
- .debug_macro   0x000000000000200c       0x1c ./Core/Src/Gyro.o
- .debug_macro   0x0000000000002028       0x22 ./Core/Src/Gyro.o
- .debug_macro   0x000000000000204a       0xaf ./Core/Src/Gyro.o
- .debug_macro   0x00000000000020f9      0x391 ./Core/Src/Gyro.o
- .debug_macro   0x000000000000248a     0x8ce4 ./Core/Src/Gyro.o
- .debug_macro   0x000000000000b16e       0x66 ./Core/Src/Gyro.o
- .debug_macro   0x000000000000b1d4     0x34a6 ./Core/Src/Gyro.o
- .debug_macro   0x000000000000e67a       0x4f ./Core/Src/Gyro.o
- .debug_macro   0x000000000000e6c9      0x924 ./Core/Src/Gyro.o
- .debug_macro   0x000000000000efed      0x251 ./Core/Src/Gyro.o
- .debug_macro   0x000000000000f23e      0x1af ./Core/Src/Gyro.o
- .debug_macro   0x000000000000f3ed      0x114 ./Core/Src/Gyro.o
- .debug_macro   0x000000000000f501      0x1a0 ./Core/Src/Gyro.o
- .debug_macro   0x000000000000f6a1      0x1ed ./Core/Src/Gyro.o
- .debug_macro   0x000000000000f88e       0x34 ./Core/Src/Gyro.o
- .debug_macro   0x000000000000f8c2       0x43 ./Core/Src/Gyro.o
- .debug_macro   0x000000000000f905       0x28 ./Core/Src/Gyro.o
- .debug_macro   0x000000000000f92d       0xb0 ./Core/Src/Gyro.o
- .debug_macro   0x000000000000f9dd      0x199 ./Core/Src/Gyro.o
- .debug_macro   0x000000000000fb76      0x22c ./Core/Src/Gyro.o
- .debug_macro   0x000000000000fda2       0x61 ./Core/Src/Gyro.o
- .debug_macro   0x000000000000fe03       0xa5 ./Core/Src/Gyro.o
- .debug_macro   0x000000000000fea8       0x4c ./Core/Src/Gyro.o
- .debug_macro   0x000000000000fef4      0x112 ./Core/Src/Gyro.o
- .debug_macro   0x0000000000010006      0x8d8 ./Core/Src/Gyro.o
- .debug_macro   0x00000000000108de       0x28 ./Core/Src/Gyro.o
- .debug_macro   0x0000000000010906      0x114 ./Core/Src/Gyro.o
- .debug_macro   0x0000000000010a1a       0x2e ./Core/Src/Gyro.o
- .debug_macro   0x0000000000010a48      0x34e ./Core/Src/Magnetometer.o
- .debug_macro   0x0000000000010d96       0x10 ./Core/Src/Magnetometer.o
- .debug_macro   0x0000000000010da6       0x34 ./Core/Src/Magnetometer.o
- .debug_macro   0x0000000000010dda      0x36d ./Core/Src/main.o
- .debug_macro   0x0000000000011147       0x8e ./Core/Src/main.o
- .debug_macro   0x00000000000111d5       0x51 ./Core/Src/main.o
- .debug_macro   0x0000000000011226      0x174 ./Core/Src/main.o
- .debug_macro   0x000000000001139a       0x55 ./Core/Src/main.o
- .debug_macro   0x00000000000113ef       0x34 ./Core/Src/main.o
- .debug_macro   0x0000000000011423       0x52 ./Core/Src/main.o
- .debug_macro   0x0000000000011475       0x34 ./Core/Src/main.o
- .debug_macro   0x00000000000114a9       0x40 ./Core/Src/main.o
- .debug_macro   0x00000000000114e9      0x1bd ./Core/Src/stm32f0xx_hal_msp.o
- .debug_macro   0x00000000000116a6      0x1c7 ./Core/Src/stm32f0xx_it.o
- .debug_macro   0x000000000001186d      0x1ae ./Core/Src/system_stm32f0xx.o
- .debug_macro   0x0000000000011a1b      0x1d2 ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal.o
- .debug_macro   0x0000000000011bed      0x1ae ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_cortex.o
- .debug_macro   0x0000000000011d9b      0x1b5 ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_gpio.o
- .debug_macro   0x0000000000011f50      0x273 ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_i2c.o
- .debug_macro   0x00000000000121c3      0x1ae ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_i2c_ex.o
- .debug_macro   0x0000000000012371      0x1c0 ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_rcc.o
- .debug_macro   0x0000000000012531      0x1ae ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_rcc_ex.o
- .debug_macro   0x00000000000126df      0x1af ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_tim.o
- .debug_macro   0x000000000001288e      0x1ae ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_tim_ex.o
+.debug_macro    0x0000000000000000    0x12a10
+ .debug_macro   0x0000000000000000      0x34e ./Core/Src/Gyro.o
+ .debug_macro   0x000000000000034e      0xa4e ./Core/Src/Gyro.o
+ .debug_macro   0x0000000000000d9c       0x22 ./Core/Src/Gyro.o
+ .debug_macro   0x0000000000000dbe       0x4c ./Core/Src/Gyro.o
+ .debug_macro   0x0000000000000e0a       0x18 ./Core/Src/Gyro.o
+ .debug_macro   0x0000000000000e22       0x94 ./Core/Src/Gyro.o
+ .debug_macro   0x0000000000000eb6       0x3c ./Core/Src/Gyro.o
+ .debug_macro   0x0000000000000ef2       0x34 ./Core/Src/Gyro.o
+ .debug_macro   0x0000000000000f26       0x16 ./Core/Src/Gyro.o
+ .debug_macro   0x0000000000000f3c       0x57 ./Core/Src/Gyro.o
+ .debug_macro   0x0000000000000f93       0x97 ./Core/Src/Gyro.o
+ .debug_macro   0x000000000000102a      0x341 ./Core/Src/Gyro.o
+ .debug_macro   0x000000000000136b       0xfd ./Core/Src/Gyro.o
+ .debug_macro   0x0000000000001468       0x10 ./Core/Src/Gyro.o
+ .debug_macro   0x0000000000001478       0x16 ./Core/Src/Gyro.o
+ .debug_macro   0x000000000000148e       0x43 ./Core/Src/Gyro.o
+ .debug_macro   0x00000000000014d1       0x34 ./Core/Src/Gyro.o
+ .debug_macro   0x0000000000001505       0x10 ./Core/Src/Gyro.o
+ .debug_macro   0x0000000000001515       0x58 ./Core/Src/Gyro.o
+ .debug_macro   0x000000000000156d       0x71 ./Core/Src/Gyro.o
+ .debug_macro   0x00000000000015de       0x1c ./Core/Src/Gyro.o
+ .debug_macro   0x00000000000015fa      0x12a ./Core/Src/Gyro.o
+ .debug_macro   0x0000000000001724       0x10 ./Core/Src/Gyro.o
+ .debug_macro   0x0000000000001734       0x6a ./Core/Src/Gyro.o
+ .debug_macro   0x000000000000179e       0x1c ./Core/Src/Gyro.o
+ .debug_macro   0x00000000000017ba       0x52 ./Core/Src/Gyro.o
+ .debug_macro   0x000000000000180c       0x22 ./Core/Src/Gyro.o
+ .debug_macro   0x000000000000182e       0x10 ./Core/Src/Gyro.o
+ .debug_macro   0x000000000000183e       0x52 ./Core/Src/Gyro.o
+ .debug_macro   0x0000000000001890       0xd5 ./Core/Src/Gyro.o
+ .debug_macro   0x0000000000001965       0x1c ./Core/Src/Gyro.o
+ .debug_macro   0x0000000000001981       0x3d ./Core/Src/Gyro.o
+ .debug_macro   0x00000000000019be       0x16 ./Core/Src/Gyro.o
+ .debug_macro   0x00000000000019d4      0x145 ./Core/Src/Gyro.o
+ .debug_macro   0x0000000000001b19       0x16 ./Core/Src/Gyro.o
+ .debug_macro   0x0000000000001b2f       0x35 ./Core/Src/Gyro.o
+ .debug_macro   0x0000000000001b64       0x20 ./Core/Src/Gyro.o
+ .debug_macro   0x0000000000001b84       0x10 ./Core/Src/Gyro.o
+ .debug_macro   0x0000000000001b94      0x12d ./Core/Src/Gyro.o
+ .debug_macro   0x0000000000001cc1       0x2e ./Core/Src/Gyro.o
+ .debug_macro   0x0000000000001cef       0x22 ./Core/Src/Gyro.o
+ .debug_macro   0x0000000000001d11      0x103 ./Core/Src/Gyro.o
+ .debug_macro   0x0000000000001e14      0x1df ./Core/Src/Gyro.o
+ .debug_macro   0x0000000000001ff3       0x1c ./Core/Src/Gyro.o
+ .debug_macro   0x000000000000200f       0x22 ./Core/Src/Gyro.o
+ .debug_macro   0x0000000000002031       0xaf ./Core/Src/Gyro.o
+ .debug_macro   0x00000000000020e0      0x391 ./Core/Src/Gyro.o
+ .debug_macro   0x0000000000002471     0x8ce4 ./Core/Src/Gyro.o
+ .debug_macro   0x000000000000b155       0x66 ./Core/Src/Gyro.o
+ .debug_macro   0x000000000000b1bb     0x34a6 ./Core/Src/Gyro.o
+ .debug_macro   0x000000000000e661       0x4f ./Core/Src/Gyro.o
+ .debug_macro   0x000000000000e6b0      0x924 ./Core/Src/Gyro.o
+ .debug_macro   0x000000000000efd4      0x251 ./Core/Src/Gyro.o
+ .debug_macro   0x000000000000f225      0x1af ./Core/Src/Gyro.o
+ .debug_macro   0x000000000000f3d4      0x114 ./Core/Src/Gyro.o
+ .debug_macro   0x000000000000f4e8      0x1a0 ./Core/Src/Gyro.o
+ .debug_macro   0x000000000000f688      0x1ed ./Core/Src/Gyro.o
+ .debug_macro   0x000000000000f875       0x34 ./Core/Src/Gyro.o
+ .debug_macro   0x000000000000f8a9       0x43 ./Core/Src/Gyro.o
+ .debug_macro   0x000000000000f8ec       0x28 ./Core/Src/Gyro.o
+ .debug_macro   0x000000000000f914       0xb0 ./Core/Src/Gyro.o
+ .debug_macro   0x000000000000f9c4      0x199 ./Core/Src/Gyro.o
+ .debug_macro   0x000000000000fb5d      0x22c ./Core/Src/Gyro.o
+ .debug_macro   0x000000000000fd89       0x61 ./Core/Src/Gyro.o
+ .debug_macro   0x000000000000fdea       0xa5 ./Core/Src/Gyro.o
+ .debug_macro   0x000000000000fe8f       0x4c ./Core/Src/Gyro.o
+ .debug_macro   0x000000000000fedb      0x112 ./Core/Src/Gyro.o
+ .debug_macro   0x000000000000ffed      0x8d8 ./Core/Src/Gyro.o
+ .debug_macro   0x00000000000108c5       0x28 ./Core/Src/Gyro.o
+ .debug_macro   0x00000000000108ed      0x114 ./Core/Src/Gyro.o
+ .debug_macro   0x0000000000010a01       0x22 ./Core/Src/Gyro.o
+ .debug_macro   0x0000000000010a23       0x2e ./Core/Src/Gyro.o
+ .debug_macro   0x0000000000010a51      0x34e ./Core/Src/Magnetometer.o
+ .debug_macro   0x0000000000010d9f       0x10 ./Core/Src/Magnetometer.o
+ .debug_macro   0x0000000000010daf       0x34 ./Core/Src/Magnetometer.o
+ .debug_macro   0x0000000000010de3      0x36c ./Core/Src/main.o
+ .debug_macro   0x000000000001114f       0x8e ./Core/Src/main.o
+ .debug_macro   0x00000000000111dd       0x51 ./Core/Src/main.o
+ .debug_macro   0x000000000001122e      0x174 ./Core/Src/main.o
+ .debug_macro   0x00000000000113a2       0x55 ./Core/Src/main.o
+ .debug_macro   0x00000000000113f7       0x34 ./Core/Src/main.o
+ .debug_macro   0x000000000001142b       0x52 ./Core/Src/main.o
+ .debug_macro   0x000000000001147d       0x40 ./Core/Src/main.o
+ .debug_macro   0x00000000000114bd      0x1bd ./Core/Src/stm32f0xx_hal_msp.o
+ .debug_macro   0x000000000001167a      0x1c7 ./Core/Src/stm32f0xx_it.o
+ .debug_macro   0x0000000000011841      0x1ae ./Core/Src/system_stm32f0xx.o
+ .debug_macro   0x00000000000119ef      0x1d2 ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal.o
+ .debug_macro   0x0000000000011bc1      0x1ae ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_cortex.o
+ .debug_macro   0x0000000000011d6f      0x1b5 ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_gpio.o
+ .debug_macro   0x0000000000011f24      0x273 ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_i2c.o
+ .debug_macro   0x0000000000012197      0x1ae ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_i2c_ex.o
+ .debug_macro   0x0000000000012345      0x1c0 ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_rcc.o
+ .debug_macro   0x0000000000012505      0x1ae ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_rcc_ex.o
+ .debug_macro   0x00000000000126b3      0x1af ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_tim.o
+ .debug_macro   0x0000000000012862      0x1ae ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_tim_ex.o
 
-.debug_line     0x0000000000000000     0xf130
+.debug_line     0x0000000000000000     0xf14a
  .debug_line    0x0000000000000000      0x95b ./Core/Src/Gyro.o
- .debug_line    0x000000000000095b      0x95d ./Core/Src/Magnetometer.o
- .debug_line    0x00000000000012b8      0xaee ./Core/Src/main.o
- .debug_line    0x0000000000001da6      0x766 ./Core/Src/stm32f0xx_hal_msp.o
- .debug_line    0x000000000000250c      0x71d ./Core/Src/stm32f0xx_it.o
- .debug_line    0x0000000000002c29      0x710 ./Core/Src/system_stm32f0xx.o
- .debug_line    0x0000000000003339       0x89 ./Core/Startup/startup_stm32f051r8tx.o
- .debug_line    0x00000000000033c2      0x91b ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal.o
- .debug_line    0x0000000000003cdd      0x9c7 ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_cortex.o
- .debug_line    0x00000000000046a4      0xa98 ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_gpio.o
- .debug_line    0x000000000000513c     0x326b ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_i2c.o
- .debug_line    0x00000000000083a7      0x8be ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_i2c_ex.o
- .debug_line    0x0000000000008c65      0xd07 ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_rcc.o
- .debug_line    0x000000000000996c      0x8c1 ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_rcc_ex.o
- .debug_line    0x000000000000a22d     0x364a ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_tim.o
- .debug_line    0x000000000000d877     0x18b9 ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_tim_ex.o
+ .debug_line    0x000000000000095b      0x96e ./Core/Src/Magnetometer.o
+ .debug_line    0x00000000000012c9      0xaf7 ./Core/Src/main.o
+ .debug_line    0x0000000000001dc0      0x766 ./Core/Src/stm32f0xx_hal_msp.o
+ .debug_line    0x0000000000002526      0x71d ./Core/Src/stm32f0xx_it.o
+ .debug_line    0x0000000000002c43      0x710 ./Core/Src/system_stm32f0xx.o
+ .debug_line    0x0000000000003353       0x89 ./Core/Startup/startup_stm32f051r8tx.o
+ .debug_line    0x00000000000033dc      0x91b ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal.o
+ .debug_line    0x0000000000003cf7      0x9c7 ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_cortex.o
+ .debug_line    0x00000000000046be      0xa98 ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_gpio.o
+ .debug_line    0x0000000000005156     0x326b ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_i2c.o
+ .debug_line    0x00000000000083c1      0x8be ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_i2c_ex.o
+ .debug_line    0x0000000000008c7f      0xd07 ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_rcc.o
+ .debug_line    0x0000000000009986      0x8c1 ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_rcc_ex.o
+ .debug_line    0x000000000000a247     0x364a ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_tim.o
+ .debug_line    0x000000000000d891     0x18b9 ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_tim_ex.o
 
-.debug_str      0x0000000000000000    0x6da70
+.debug_str      0x0000000000000000    0x6da6b
  .debug_str     0x0000000000000000    0x6a393 ./Core/Src/Gyro.o
                                       0x6a6e9 (size before relaxing)
- .debug_str     0x000000000006a393      0x18f ./Core/Src/Magnetometer.o
-                                      0x6a77d (size before relaxing)
- .debug_str     0x000000000006a522      0x9ec ./Core/Src/main.o
-                                      0x6b335 (size before relaxing)
- .debug_str     0x000000000006af0e       0x9e ./Core/Src/stm32f0xx_hal_msp.o
+ .debug_str     0x000000000006a393      0x172 ./Core/Src/Magnetometer.o
+                                      0x6a766 (size before relaxing)
+ .debug_str     0x000000000006a505      0xa04 ./Core/Src/main.o
+                                      0x6b330 (size before relaxing)
+ .debug_str     0x000000000006af09       0x9e ./Core/Src/stm32f0xx_hal_msp.o
                                       0x66ce2 (size before relaxing)
- .debug_str     0x000000000006afac       0xae ./Core/Src/stm32f0xx_it.o
+ .debug_str     0x000000000006afa7       0xae ./Core/Src/stm32f0xx_it.o
                                       0x66461 (size before relaxing)
- .debug_str     0x000000000006b05a       0x8b ./Core/Src/system_stm32f0xx.o
+ .debug_str     0x000000000006b055       0x8b ./Core/Src/system_stm32f0xx.o
                                       0x663b9 (size before relaxing)
- .debug_str     0x000000000006b0e5       0x36 ./Core/Startup/startup_stm32f051r8tx.o
+ .debug_str     0x000000000006b0e0       0x36 ./Core/Startup/startup_stm32f051r8tx.o
                                          0x78 (size before relaxing)
- .debug_str     0x000000000006b11b      0x37a ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal.o
+ .debug_str     0x000000000006b116      0x37a ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal.o
                                       0x6697c (size before relaxing)
- .debug_str     0x000000000006b495      0x1bf ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_cortex.o
+ .debug_str     0x000000000006b490      0x1bf ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_cortex.o
                                       0x6676d (size before relaxing)
- .debug_str     0x000000000006b654      0x11b ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_gpio.o
+ .debug_str     0x000000000006b64f      0x11b ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_gpio.o
                                       0x6655a (size before relaxing)
- .debug_str     0x000000000006b76f      0xdb9 ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_i2c.o
+ .debug_str     0x000000000006b76a      0xdb9 ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_i2c.o
                                       0x67680 (size before relaxing)
- .debug_str     0x000000000006c528       0xb8 ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_i2c_ex.o
+ .debug_str     0x000000000006c523       0xb8 ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_i2c_ex.o
                                       0x6692b (size before relaxing)
- .debug_str     0x000000000006c5e0      0x20f ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_rcc.o
+ .debug_str     0x000000000006c5db      0x20f ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_rcc.o
                                       0x667f5 (size before relaxing)
- .debug_str     0x000000000006c7ef       0x97 ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_rcc_ex.o
+ .debug_str     0x000000000006c7ea       0x97 ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_rcc_ex.o
                                       0x66514 (size before relaxing)
- .debug_str     0x000000000006c886      0xd57 ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_tim.o
+ .debug_str     0x000000000006c881      0xd57 ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_tim.o
                                       0x677bf (size before relaxing)
- .debug_str     0x000000000006d5dd      0x493 ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_tim_ex.o
+ .debug_str     0x000000000006d5d8      0x493 ./Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_tim_ex.o
                                       0x66fdb (size before relaxing)
 
 .comment        0x0000000000000000       0x50
