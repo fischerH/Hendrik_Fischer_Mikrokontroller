@@ -17,40 +17,43 @@ bool InitialisiereMagnetometer(){
 
 
 	//Control Register 1
-		//versetzt Sensor in Standby, da register bis auf Standy/Active Mode nur in Standby verändert werden kann
+		//versetzt Sensor in Standby, da CTRL_REG1 bis auf Standy/Active Mode Selection nur in Standby verändert werden kann
 	buf[0] = FXOS8700CQ_CTRL_REG1;
 	buf[1] = 0b00000000;
 	ret = HAL_I2C_Master_Transmit(&hi2c1, ADDR_Magnetometer, buf, 2, HAL_MAX_DELAY);
 
 	HAL_Delay(80);
 		//aktiviere Sensor und konfiguriere Control Register 1
-	//Bit 7-6: auto-wake sample frequency; irrelevant (wähle 00)	Bit 5-3: Output data rate selection; wähle 010 für 200Hz mag only mode
-	//bzw. 100 Hz hybrid mode	Bit 2: Inoise; wähle 0 für Normal mode	Bit 1: Fast Read Mode; wähle 0 für Normal Mode	Bit 0: wähle 1
-	//um Sensor aus Standby zu holen und zu aktivieren
+		//Bit 7-6: auto-wake sample frequency; irrelevant (wähle 00)	Bit 5-3: Output data rate selection; wähle 010 für 200Hz mag only mode
+		//bzw. 100 Hz hybrid mode	Bit 2: Inoise; wähle 0 für Normal mode	Bit 1: Fast Read Mode; wähle 0 für Normal Mode	Bit 0: wähle 1
+		//um Sensor aus Standby zu holen und zu aktivieren
 	buf[1] = 0b00010001;
 	ret = HAL_I2C_Master_Transmit(&hi2c1, ADDR_Magnetometer, buf, 2, HAL_MAX_DELAY);
+		//prüfe, ob CTRL_REG1 richtig konfiguriert wurde
+	ret = HAL_I2C_Mem_Read(&hi2c1, ADDR_Magnetometer, FXOS8700CQ_CTRL_REG1, 1, buf, 1, 1000);
+
+		//Kopiere Inhalt von buf[0] in buf[1]
+
+	buf[1] = buf [0];
+
 
 	//checke den Device Identifier
 
-	buf[0] = FXOS8700CQ_WHOAMI;
-	ret = HAL_I2C_Master_Transmit(&hi2c1, ADDR_Magnetometer, buf, 1, HAL_MAX_DELAY);
-	HAL_Delay(80);
-	if ( ret == HAL_OK ) {
 
-		ret = HAL_I2C_Master_Receive(&hi2c1, ADDR_Magnetometer, buf, 1, HAL_MAX_DELAY); /*empfange den Device Identifier*/
-		HAL_Delay(80);
-		if ( ret == HAL_OK && buf[0] == FXOS8700CQ_WHOAMI_VAL) {
-			return true;
+	ret = HAL_I2C_Mem_Read(&hi2c1, ADDR_Magnetometer, FXOS8700CQ_WHOAMI, 1, buf, 1, 1000);
 
-		}else{
-			strcpy((char*)buf, "INIT ERR Read");
-			return false;
-		}
+
+
+
+	if ( ret == HAL_OK && buf[0] == FXOS8700CQ_WHOAMI_VAL && buf[1] == 0b00010001) {
+		//kein Hal-Fehler, Magnetometer Device ID ist korrekt, CTRL-Reg 1 hat richtige Werte
+		return true;
 
 	}else{
-		strcpy((char*)buf, "INIT ERR Send");
+		strcpy((char*)buf, "INIT ERROR");
 		return false;
 	}
+
 }
 
 

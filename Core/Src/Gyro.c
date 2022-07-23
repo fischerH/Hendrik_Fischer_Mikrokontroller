@@ -13,39 +13,45 @@
 bool InitialisiereGyro(){
 	HAL_StatusTypeDef ret;
 	uint8_t buf[15];
+	buf[0] = CTRL_REG1;
+	buf[1] = 0b00000000;
 
 	//konfiguriere Control Register 1
+		//versetze Sensor in Standby, um Control Register 1 ändern zu können ohne die Genauigkeit der Output Daten zu gefähreden -> Data Sheet S.45
+	ret = HAL_I2C_Master_Transmit(&hi2c1, ADDR_Gyro, buf, 2, HAL_MAX_DELAY);
 
-	buf[0] = CTRL_REG1;
-	buf[1] = 0b00001111; //Unused	Reset 0/1	SelfTest 0/1	Output Data Rate 011 für 100 Hz	Active Mode gewählt mit 11
+		//konfiguriere Wert, der in CTRL_REG1 geschrieben werden soll
+	buf[1] = 0b00001111; //Bit7: Unused		Bit6: Reset 0/1		Bit5: SelfTest 0/1		Bit4-2: Output Data Rate 011 für 100 Hz gewählt		Bit 1-0: Active Mode gewählt mit 11
+
 
 	ret = HAL_I2C_Master_Transmit(&hi2c1, ADDR_Gyro, buf, 2, HAL_MAX_DELAY);
 
 	HAL_Delay(80);
+	//überprüfe, ob Control Register 1 richtig konfiguriert wurde
+
+	ret = HAL_I2C_Mem_Read(&hi2c1, ADDR_Gyro, CTRL_REG1, 1, buf, 1, 1000);
+	//Kopiere Inhalt von buf[0] in buf[1]
+
+	buf[1] = buf [0];
 
 	//lese Device Identifier
 
- 	buf[0] = WHO_AM_I_Gyro_Reg;
-	ret = HAL_I2C_Master_Transmit(&hi2c1, ADDR_Gyro, buf, 1, 1000);
-	HAL_Delay(80);
-	if ( ret == HAL_OK ) {
+ 	ret = HAL_I2C_Mem_Read(&hi2c1, ADDR_Gyro, WHO_AM_I_Gyro_Reg, 1, buf, 1, 1000);
 
-		ret = HAL_I2C_Master_Receive(&hi2c1, ADDR_Gyro, buf, 1, HAL_MAX_DELAY); /*empfange den Device Identifier*/
-		HAL_Delay(80);
-		if ( ret == HAL_OK && buf[0] == GyroDeviceID) {
+
+
+		if ( ret == HAL_OK && buf[0] == GyroDeviceID && buf[1] == 0b00001111) {
+			//kein Hal-Fehler, GyroDeviceID ist korrekt, CTRL-Reg 1 hat richtige Werte
 			return true;
 
 		}else{
-			strcpy((char*)buf, "INIT ERR Read");
+			strcpy((char*)buf, "INIT ERROR");
 			return false;
 		}
 
-	}else{
-		strcpy((char*)buf, "INIT ERR Send");
-		return false;
-	}
-
 }
+
+
 
 void gyroWerteAuslesen (int16_t *x_axis, int16_t *y_axis, int16_t *z_axis){
 	HAL_StatusTypeDef ret;
