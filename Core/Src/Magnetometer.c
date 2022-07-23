@@ -33,7 +33,7 @@ bool InitialisiereMagnetometer(){
 	//checke den Device Identifier
 
 	buf[0] = FXOS8700CQ_WHOAMI;
-	ret = HAL_I2C_Master_Transmit(&hi2c1, ADDR_Magnetometer, buf, 1, 1000);
+	ret = HAL_I2C_Master_Transmit(&hi2c1, ADDR_Magnetometer, buf, 1, HAL_MAX_DELAY);
 	HAL_Delay(80);
 	if ( ret == HAL_OK ) {
 
