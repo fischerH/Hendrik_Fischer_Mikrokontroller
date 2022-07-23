@@ -26,6 +26,7 @@
 #include <gyro.h>
 #include <Magnetometer.h>
 #include <stdbool.h>
+#include <math.h>
 
 /* USER CODE END Includes */
 
@@ -87,6 +88,8 @@ int main(void)
 	int16_t x_axis_Mag;
 	int16_t y_axis_Mag;
 	int16_t z_axis_Mag;
+
+	double Ausrichtung;
 
 
   /* USER CODE END 1 */
@@ -156,20 +159,37 @@ int main(void)
 
   }
 
+  //Funktion, umd die Ausrichtung des Sensors zu bestimmen
+
+  double BerechneAusrichtung(int16_t *x_axis_Mag, int16_t *y_axis_Mag){
+	  double Abweichung;
+
+	  Abweichung = 90 - atan2((double)*y_axis_Mag, (double)*x_axis_Mag) * 180 / M_PI;
+
+	  return Abweichung;
+  }
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  while (1)
+
   {
 
 	  gyroWerteAuslesen(&x_axis, &y_axis, &z_axis);
 	  HAL_Delay(10);
 	  MagnetometerWerteAuslesen(&x_axis_Mag, &y_axis_Mag, &z_axis_Mag);
+
+	  Ausrichtung = BerechneAusrichtung(&x_axis_Mag,&y_axis_Mag);
+
+	  if (Ausrichtung <= 5){
+		  __HAL_TIM_SET_COMPARE(&htim3,TIM_CHANNEL_3,511);
+	  }
+
 	  HAL_Delay(10);
 
 
-	  if (z_axis >= 0){
+	  if (z_axis >= 0 && Ausrichtung > 5){
 		  // z-Achse wird GEGEN Uhrzeigersinn gedreht
 		  int16_t z_axis_Max = 0x7FFF; //maximaler Wert eines 16-bit signed int
 		  int16_t z = (z_axis*511)/z_axis_Max; //511 ist in der Konfiguration von Tim3 die Zahl, bis zu der gezählt wird.
@@ -179,7 +199,7 @@ int main(void)
 		  //setzt Pulsweite für blaue LED auf 0
 		  __HAL_TIM_SET_COMPARE(&htim3,TIM_CHANNEL_3,0);
 
-	  }else{
+	  }else if (z_axis <= 0 && Ausrichtung > 5){
 		  // z-Achse wird IM Uhrzeigersinn gedreht
 		  int16_t z_axis_Min = -0x8000;	//minimaler Wert eines 16-bit signed int
 		  int16_t z = (z_axis*511)/z_axis_Min;
@@ -187,6 +207,8 @@ int main(void)
 		  __HAL_TIM_SET_COMPARE(&htim3,TIM_CHANNEL_3,z);
 		  //setzt Pulsweite für grüne LED auf 0
 		  __HAL_TIM_SET_COMPARE(&htim3,TIM_CHANNEL_4,0);
+	  }else{
+		  //do nothing
 	  }
 
 
