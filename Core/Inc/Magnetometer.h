@@ -35,6 +35,7 @@ extern "C" {
 #define FXOS8700CQ_M_CTRL_REG2 0x5C
 #define FXOS8700CQ_WHOAMI_VAL 0xC7
 
+
 extern 	I2C_HandleTypeDef hi2c1;
 
 

@@ -16,44 +16,60 @@ bool InitialisiereMagnetometer(){
 	uint8_t buf[15];
 
 
-	//Control Register 1
-		//versetzt Sensor in Standby, da CTRL_REG1 bis auf Standy/Active Mode Selection nur in Standby verändert werden kann
+	//Versetze Sensor zur Konfiguration in Standby
+
 	buf[0] = FXOS8700CQ_CTRL_REG1;
-	buf[1] = 0b00000000;
+	buf[1] = 0b00000000; //letztes Bit gibt Standby-Modus an
 	ret = HAL_I2C_Master_Transmit(&hi2c1, ADDR_Magnetometer, buf, 2, HAL_MAX_DELAY);
 
-	HAL_Delay(80);
-		//aktiviere Sensor und konfiguriere Control Register 1
+	//konfiguriere M_CTRL_REG1
+	buf[0] = FXOS8700CQ_M_CTRL_REG1;
+
+			//Bit 7: Auto Calibration On/[Off]	Bit 6: One-shot magnetic reset On/[Off]
+			//Bit 5: One-shot triggered Magnetic measurement mode On/[Off]
+			//Bit 4-2: Oversample ratio (OSR) (Datasheet S.99) wähle 111 für OSR = 8 bei 200 Hz ODR
+			//Bit 1-0:	11 gewählt für Hybrid Mode
+	buf[1] = 0b00011111;
+
+	ret = HAL_I2C_Master_Transmit(&hi2c1, ADDR_Magnetometer, buf, 2, HAL_MAX_DELAY);
+
+		//prüfe, ob M_CTRL_REG1 korrekt konfiguriert ist
+
+	ret = HAL_I2C_Mem_Read(&hi2c1, ADDR_Magnetometer, FXOS8700CQ_M_CTRL_REG1, 1, buf, 1, 1000);
+
+			if (ret != HAL_OK || buf[0] != 0b00011111){
+				//prüfe ob I2C-Kommunikation geklappt hat bzw. ob die M_CTRL-REG1-Werte richtig sind
+				strcpy((char*)buf, "INIT ERROR");
+				return false;
+			}
+
+	//aktiviere Sensor und konfiguriere Control Register 1
 		//Bit 7-6: auto-wake sample frequency; irrelevant (wähle 00)	Bit 5-3: Output data rate selection; wähle 010 für 200Hz mag only mode
 		//bzw. 100 Hz hybrid mode	Bit 2: Inoise; wähle 0 für Normal mode	Bit 1: Fast Read Mode; wähle 0 für Normal Mode	Bit 0: wähle 1
 		//um Sensor aus Standby zu holen und zu aktivieren
+	buf[0] = FXOS8700CQ_CTRL_REG1;
 	buf[1] = 0b00010001;
 	ret = HAL_I2C_Master_Transmit(&hi2c1, ADDR_Magnetometer, buf, 2, HAL_MAX_DELAY);
 		//prüfe, ob CTRL_REG1 richtig konfiguriert wurde
 	ret = HAL_I2C_Mem_Read(&hi2c1, ADDR_Magnetometer, FXOS8700CQ_CTRL_REG1, 1, buf, 1, 1000);
 
-		//Kopiere Inhalt von buf[0] in buf[1]
-
-	buf[1] = buf [0];
+		if (ret != HAL_OK || buf[0] != 0b00010001){
+			//prüfe ob I2C-Kommunikation geklappt hat bzw. ob die CTRL-REG1-Werte richtig sind
+			strcpy((char*)buf, "INIT ERROR");
+			return false;
+		}
 
 
 	//checke den Device Identifier
 
-
 	ret = HAL_I2C_Mem_Read(&hi2c1, ADDR_Magnetometer, FXOS8700CQ_WHOAMI, 1, buf, 1, 1000);
 
-
-
-
-	if ( ret == HAL_OK && buf[0] == FXOS8700CQ_WHOAMI_VAL && buf[1] == 0b00010001) {
-		//kein Hal-Fehler, Magnetometer Device ID ist korrekt, CTRL-Reg 1 hat richtige Werte
-		return true;
-
-	}else{
-		strcpy((char*)buf, "INIT ERROR");
-		return false;
+		if ( ret != HAL_OK || buf[0] != FXOS8700CQ_WHOAMI_VAL) {
+			//prüfe ob I2C-Kommunikation geklappt hat bzw. ob die Device-ID richtig ist
+			strcpy((char*)buf, "INIT ERROR");
+			return false;
 	}
-
+return true;
 }
 
 
