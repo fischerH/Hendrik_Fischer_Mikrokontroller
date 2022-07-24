@@ -1,0 +1,2 @@
+../Core/Src/FXOS8700CQ.c:14:6:InitialisiereFXOS8700CQ	48	static
+../Core/Src/FXOS8700CQ.c:96:6:FXOS8700CQWerteAuslesen	64	static

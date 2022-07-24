@@ -24,7 +24,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <gyro.h>
-#include <Magnetometer.h>
+#include <FXOS8700CQ.h>
 #include <stdbool.h>
 #include <math.h>
 
@@ -78,16 +78,21 @@ int main(void)
 
 
 
+	//Initialisierung der Sensor-Rohdaten-Variablen für Gyroskop, Beschleunigungssensor und Magnetometer
 
 
+	int16_t x_axis, y_axis, z_axis;
 
-	int16_t x_axis; //ändern auf signed int!!!
-	int16_t y_axis;
-	int16_t z_axis;
+	int16_t x_axis_Acc, y_axis_Acc, z_axis_Acc;
 
-	int16_t x_axis_Mag;
-	int16_t y_axis_Mag;
-	int16_t z_axis_Mag;
+	int16_t x_axis_Mag, y_axis_Mag, z_axis_Mag;
+
+	//Initialisierung der Variablen, in denen die aktuelle Ausrichtung des Sensors
+	//gespeichert wird, wenn der blaue knopf gedrückt wird
+
+	//volatile, weil sie in der ISR geändert wird
+
+	volatile int16_t x_Tara_Acc, y_Tara_Acc, z_Tara_Acc, x_Tara_Mag, y_Tara_Mag, z_Tara_Mag;
 
 	double Ausrichtung;
 
@@ -125,12 +130,12 @@ int main(void)
 //Initialisiere die Sensoren
 
   bool Gyro_Init_Check;
-  bool Magnetometer_Init_Check;
+  bool FXOS8700CQ_Init_Check;
 
   Gyro_Init_Check = InitialisiereGyro();
 
 
-  Magnetometer_Init_Check = InitialisiereMagnetometer();
+  FXOS8700CQ_Init_Check = InitialisiereFXOS8700CQ();
 
 
   if (Gyro_Init_Check == true){
@@ -146,7 +151,7 @@ int main(void)
 
   }
 
-  if (Magnetometer_Init_Check == true){
+  if (FXOS8700CQ_Init_Check == true){
 	  //I2C-Kommunikation funktioniert
 	  //blinke blaue LED 3x
 	  uint8_t x;
@@ -161,11 +166,11 @@ int main(void)
 
   //Funktion, umd die Ausrichtung des Sensors zu bestimmen
 
-  double BerechneAusrichtung(int16_t *x_axis_Mag, int16_t *y_axis_Mag){
+  double BerechneAusrichtung(int16_t *x_axis_Mag, int16_t *y_axis_Mag, int16_t *z_axis_Mag, int16_t *x_axis_Acc, int16_t *y_axis_Acc, int16_t *z_axis_Acc){
 	  double Abweichung;
 
 	  Abweichung = 90 - atan2((double)*y_axis_Mag, (double)*x_axis_Mag) * 180 / M_PI;
-
+	  Abweichung = 6;
 	  return Abweichung;
   }
 
@@ -174,13 +179,13 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
-  {
+  while(1){
 
 	  gyroWerteAuslesen(&x_axis, &y_axis, &z_axis);
 	  HAL_Delay(10);
-	  MagnetometerWerteAuslesen(&x_axis_Mag, &y_axis_Mag, &z_axis_Mag);
+	  FXOS8700CQWerteAuslesen(&x_axis_Mag, &y_axis_Mag, &z_axis_Mag, &x_axis_Acc, &y_axis_Acc, &z_axis_Acc);
 
-	  Ausrichtung = BerechneAusrichtung(&x_axis_Mag,&y_axis_Mag);
+	  Ausrichtung = BerechneAusrichtung(&x_axis_Mag, &y_axis_Mag, &z_axis_Mag, &x_axis_Acc, &y_axis_Acc, &z_axis_Acc);
 
 	  if (Ausrichtung <= 5){
 		  __HAL_TIM_SET_COMPARE(&htim3,TIM_CHANNEL_3,511);
@@ -414,12 +419,11 @@ static void MX_GPIO_Init(void)
 
 /* USER CODE BEGIN 4 */
 /* Interrupt Funktionen */
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin, volatile int16_t x_Tara_Acc, int16_t x_axis_Acc)
 {
     if(GPIO_Pin == GPIO_PIN_0) // If The INT Source Is EXTI Line9 (A9 Pin)
     {
-   // HAL_TIM_PWM_ConfigChannel(&htim3, &sConfigOC, TIM_Channel_3);
-    //HAL_GPIO_TogglePin(LD4_GPIO_Port, LD4_Pin); // Toggle The Output (LED) Pin
+    	x_Tara_Acc = x_axis_Acc;
     }
 }
 

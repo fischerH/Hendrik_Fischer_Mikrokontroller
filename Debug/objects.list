@@ -1,3 +1,4 @@
+"./Core/Src/FXOS8700CQ.o"
 "./Core/Src/Gyro.o"
 "./Core/Src/Magnetometer.o"
 "./Core/Src/main.o"
