@@ -51,6 +51,12 @@ TIM_HandleTypeDef htim3;
 
 /* USER CODE BEGIN PV */
 
+//Initialisierung der Variable, die vom Interrupt gesetzt wird
+
+//volatile, damit sie vom Compiler nicht wegoptimiert wird
+volatile bool Tara = false;
+
+
 
 /* USER CODE END PV */
 
@@ -80,19 +86,23 @@ int main(void)
 
 	//Initialisierung der Sensor-Rohdaten-Variablen für Gyroskop, Beschleunigungssensor und Magnetometer
 
-
+	//Gyro
 	int16_t x_axis, y_axis, z_axis;
 
+	//Accelerometer
 	int16_t x_axis_Acc, y_axis_Acc, z_axis_Acc;
 
+	//Magnetometer
 	int16_t x_axis_Mag, y_axis_Mag, z_axis_Mag;
 
-	//Initialisierung der Variablen, in denen die aktuelle Ausrichtung des Sensors
-	//gespeichert wird, wenn der blaue knopf gedrückt wird
+	//Initialisiere TARA-Werte
 
-	//volatile, weil sie in der ISR geändert wird
+	int16_t x_Tara_Acc, y_Tara_Acc, z_Tara_Acc, x_Tara_Mag, y_Tara_Mag, z_Tara_Mag;
 
-	volatile int16_t x_Tara_Acc, y_Tara_Acc, z_Tara_Acc, x_Tara_Mag, y_Tara_Mag, z_Tara_Mag;
+	//Setze Tara-Werte auf 1 0 0
+	x_Tara_Mag = 1;
+	y_Tara_Mag = 0;
+	z_Tara_Mag = 0;
 
 	double Ausrichtung;
 
@@ -166,11 +176,18 @@ int main(void)
 
   //Funktion, umd die Ausrichtung des Sensors zu bestimmen
 
-  double BerechneAusrichtung(int16_t *x_axis_Mag, int16_t *y_axis_Mag, int16_t *z_axis_Mag, int16_t *x_axis_Acc, int16_t *y_axis_Acc, int16_t *z_axis_Acc){
+  double BerechneAusrichtung(int16_t *x_axis_Mag, int16_t *y_axis_Mag, int16_t *z_axis_Mag, int16_t *x_Tara_Mag, int16_t *y_Tara_Mag, int16_t *z_Tara_Mag){
 	  double Abweichung;
 
-	  Abweichung = 90 - atan2((double)*y_axis_Mag, (double)*x_axis_Mag) * 180 / M_PI;
-	  Abweichung = 6;
+	  //Skalarprodukt von Taravektor [x_Tara_Mag y_Tara_Mag z_Tara_Mag]^T und Nordvektor [x_axis_Mag y_axis_Mag z_axis_Mag]^T
+
+	  int32_t skalarprod = (*x_Tara_Mag) * (*x_axis_Mag) + (*y_Tara_Mag) * (*y_axis_Mag) + (*z_Tara_Mag) * (*z_axis_Mag);
+	  double BetragTaraVec = sqrt((*x_Tara_Mag) * (*x_Tara_Mag) + (*y_Tara_Mag) * (*y_Tara_Mag) + (*z_Tara_Mag) * (*z_Tara_Mag));
+	  double BetragMagVec = sqrt((*x_axis_Mag) * (*x_axis_Mag) + (*y_axis_Mag) * (*y_axis_Mag) + (*z_axis_Mag) * (*z_axis_Mag));
+	  // Winkel zwischen TaraVec und MagVec
+	  Abweichung = acos(skalarprod/(BetragTaraVec*BetragMagVec))*(180/M_PI);
+	  //Abweichung = 90 - atan2((double)*y_axis_Mag, (double)*x_axis_Mag) * 180 / M_PI;
+
 	  return Abweichung;
   }
 
@@ -185,7 +202,7 @@ int main(void)
 	  HAL_Delay(10);
 	  FXOS8700CQWerteAuslesen(&x_axis_Mag, &y_axis_Mag, &z_axis_Mag, &x_axis_Acc, &y_axis_Acc, &z_axis_Acc);
 
-	  Ausrichtung = BerechneAusrichtung(&x_axis_Mag, &y_axis_Mag, &z_axis_Mag, &x_axis_Acc, &y_axis_Acc, &z_axis_Acc);
+	  Ausrichtung = BerechneAusrichtung(&x_axis_Mag, &y_axis_Mag, &z_axis_Mag, &x_Tara_Mag, &y_Tara_Mag, &z_Tara_Mag);
 
 	  if (Ausrichtung <= 5){
 		  __HAL_TIM_SET_COMPARE(&htim3,TIM_CHANNEL_3,511);
@@ -216,7 +233,17 @@ int main(void)
 		  //do nothing
 	  }
 
+	  //Prüfe, ob blauer Knopf gedrückt wurde
+	  if (Tara == true){
 
+		  x_Tara_Acc = x_axis_Acc;
+		  y_Tara_Acc = y_axis_Acc;
+		  z_Tara_Acc = z_axis_Acc;
+		  x_Tara_Mag = x_axis_Mag;
+		  y_Tara_Mag = y_axis_Mag;
+		  z_Tara_Mag = z_axis_Mag;
+		  Tara = false;
+	  }
 
     /* USER CODE END WHILE */
 
@@ -419,11 +446,11 @@ static void MX_GPIO_Init(void)
 
 /* USER CODE BEGIN 4 */
 /* Interrupt Funktionen */
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin, volatile int16_t x_Tara_Acc, int16_t x_axis_Acc)
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)//, volatile int16_t x_Tara_Acc, int16_t x_axis_Acc
 {
     if(GPIO_Pin == GPIO_PIN_0) // If The INT Source Is EXTI Line9 (A9 Pin)
     {
-    	x_Tara_Acc = x_axis_Acc;
+    	Tara = true;
     }
 }
 
