@@ -207,7 +207,7 @@ int main(void)
 	  //Lese Sensorwerte aus
 	  gyroWerteAuslesen(&x_axis, &y_axis, &z_axis);
 	  HAL_Delay(10);
-	  FXOS8700CQWerteAuslesen(&x_axis_Mag, &y_axis_Mag, &z_axis_Mag, &x_axis_Acc, &y_axis_Acc, &z_axis_Acc);
+ 	  FXOS8700CQWerteAuslesen(&x_axis_Mag, &y_axis_Mag, &z_axis_Mag, &x_axis_Acc, &y_axis_Acc, &z_axis_Acc);
 
 
 	  //Prüfe, ob blauer Knopf gedrückt wurde
