@@ -131,10 +131,13 @@ int main(void)
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
 
+//starte Timer
   HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_3);
   HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_4);
 
-
+//LEDS aus
+  __HAL_TIM_SET_COMPARE(&htim3,TIM_CHANNEL_3,0);
+  __HAL_TIM_SET_COMPARE(&htim3,TIM_CHANNEL_4,0);
 
 
 //Initialisiere die Sensoren
@@ -152,11 +155,13 @@ int main(void)
 	  //I2C-Kommunikation funktioniert
 	  //blinke grüne LED 3x
 	  uint8_t x;
-	  for (x = 0; x <= 3; ++x){
+	  for (x = 0; x < 3; ++x){
+
 		  __HAL_TIM_SET_COMPARE(&htim3,TIM_CHANNEL_4,511);
-		  HAL_Delay(500);
+		  HAL_Delay(100);
 		  __HAL_TIM_SET_COMPARE(&htim3,TIM_CHANNEL_4,0);
-		  HAL_Delay(500);
+		  HAL_Delay(100);
+
 		    }
 
   }
@@ -165,11 +170,13 @@ int main(void)
 	  //I2C-Kommunikation funktioniert
 	  //blinke blaue LED 3x
 	  uint8_t x;
-	  for (x = 0; x <= 3; ++x){
+	  for (x = 0; x < 3; ++x){
+
+
 		  __HAL_TIM_SET_COMPARE(&htim3,TIM_CHANNEL_3,511);
-		  HAL_Delay(500);
+		  HAL_Delay(100);
 		  __HAL_TIM_SET_COMPARE(&htim3,TIM_CHANNEL_3,0);
-		  HAL_Delay(500);
+		  HAL_Delay(100);
 		    }
 
   }
@@ -181,12 +188,12 @@ int main(void)
 
 	  //Skalarprodukt von Taravektor [x_Tara_Mag y_Tara_Mag z_Tara_Mag]^T und Nordvektor [x_axis_Mag y_axis_Mag z_axis_Mag]^T
 
-	  int32_t skalarprod = (*x_Tara_Mag) * (*x_axis_Mag) + (*y_Tara_Mag) * (*y_axis_Mag) + (*z_Tara_Mag) * (*z_axis_Mag);
-	  double BetragTaraVec = sqrt((*x_Tara_Mag) * (*x_Tara_Mag) + (*y_Tara_Mag) * (*y_Tara_Mag) + (*z_Tara_Mag) * (*z_Tara_Mag));
-	  double BetragMagVec = sqrt((*x_axis_Mag) * (*x_axis_Mag) + (*y_axis_Mag) * (*y_axis_Mag) + (*z_axis_Mag) * (*z_axis_Mag));
-	  // Winkel zwischen TaraVec und MagVec
-	  Abweichung = acos(skalarprod/(BetragTaraVec*BetragMagVec))*(180/M_PI);
-	  //Abweichung = 90 - atan2((double)*y_axis_Mag, (double)*x_axis_Mag) * 180 / M_PI;
+	  //int32_t skalarprod = (*x_Tara_Mag) * (*x_axis_Mag) + (*y_Tara_Mag) * (*y_axis_Mag) + (*z_Tara_Mag) * (*z_axis_Mag);
+	  //double BetragTaraVec = sqrt((*x_Tara_Mag) * (*x_Tara_Mag) + (*y_Tara_Mag) * (*y_Tara_Mag) + (*z_Tara_Mag) * (*z_Tara_Mag));
+	  //double BetragMagVec = sqrt((*x_axis_Mag) * (*x_axis_Mag) + (*y_axis_Mag) * (*y_axis_Mag) + (*z_axis_Mag) * (*z_axis_Mag));
+	   //Winkel zwischen TaraVec und MagVec
+	  //Abweichung = acos(skalarprod/(BetragTaraVec*BetragMagVec))*(180/M_PI);
+	  Abweichung = 90 - atan2((double)*y_axis_Mag, (double)*x_axis_Mag) * 180 / M_PI;
 
 	  return Abweichung;
   }
@@ -197,14 +204,27 @@ int main(void)
   /* USER CODE BEGIN WHILE */
 
   while(1){
-
+	  //Lese Sensorwerte aus
 	  gyroWerteAuslesen(&x_axis, &y_axis, &z_axis);
 	  HAL_Delay(10);
 	  FXOS8700CQWerteAuslesen(&x_axis_Mag, &y_axis_Mag, &z_axis_Mag, &x_axis_Acc, &y_axis_Acc, &z_axis_Acc);
 
+
+	  //Prüfe, ob blauer Knopf gedrückt wurde
+	  if (Tara == true){
+
+		  x_Tara_Acc = x_axis_Acc;
+		  y_Tara_Acc = y_axis_Acc;
+		  z_Tara_Acc = z_axis_Acc;
+		  x_Tara_Mag = x_axis_Mag;
+		  y_Tara_Mag = y_axis_Mag;
+		  z_Tara_Mag = z_axis_Mag;
+		  Tara = false;
+	  }
 	  Ausrichtung = BerechneAusrichtung(&x_axis_Mag, &y_axis_Mag, &z_axis_Mag, &x_Tara_Mag, &y_Tara_Mag, &z_Tara_Mag);
 
 	  if (Ausrichtung <= 5){
+		  //blinke beide LEDs
 		  __HAL_TIM_SET_COMPARE(&htim3,TIM_CHANNEL_3,511);
 	  }
 
@@ -233,17 +253,7 @@ int main(void)
 		  //do nothing
 	  }
 
-	  //Prüfe, ob blauer Knopf gedrückt wurde
-	  if (Tara == true){
 
-		  x_Tara_Acc = x_axis_Acc;
-		  y_Tara_Acc = y_axis_Acc;
-		  z_Tara_Acc = z_axis_Acc;
-		  x_Tara_Mag = x_axis_Mag;
-		  y_Tara_Mag = y_axis_Mag;
-		  z_Tara_Mag = z_axis_Mag;
-		  Tara = false;
-	  }
 
     /* USER CODE END WHILE */
 
