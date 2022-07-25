@@ -1,2 +1,0 @@
-../Core/Src/Magnetometer.c:14:6:InitialisiereMagnetometer	48	static
-../Core/Src/Magnetometer.c:76:6:MagnetometerWerteAuslesen	64	static
