@@ -4790,7 +4790,7 @@ void gyroWerteAuslesen (int16_t *x_axis, int16_t *y_axis, int16_t *z_axis){
  800248e:	68fb      	ldr	r3, [r7, #12]
  8002490:	2200      	movs	r2, #0
  8002492:	801a      	strh	r2, [r3, #0]
-			*x_axis = (buf[1] << 8) | buf[2]; /* buf[1] enthält x_MSB; buf[2] enthält x_LSB. Deshalb wird das MSB in die Variable eingesetzt, um 8 bits verschoben, und dann LSB mit logischem Oder verknüpft*/
+			*x_axis = ((buf[1] << 8) | buf[2]);//*15.625; /* buf[1] enthält x_MSB; buf[2] enthält x_LSB. Deshalb wird das MSB in die Variable eingesetzt, um 8 bits verschoben, und dann LSB mit logischem Oder verknüpft*/
  8002494:	197b      	adds	r3, r7, r5
  8002496:	785b      	ldrb	r3, [r3, #1]
  8002498:	021b      	lsls	r3, r3, #8
@@ -4806,7 +4806,7 @@ void gyroWerteAuslesen (int16_t *x_axis, int16_t *y_axis, int16_t *z_axis){
  80024aa:	68bb      	ldr	r3, [r7, #8]
  80024ac:	2200      	movs	r2, #0
  80024ae:	801a      	strh	r2, [r3, #0]
-			*y_axis = (buf[3] << 8) | buf[4];
+			*y_axis = ((buf[3] << 8) | buf[4]);//*15.625; //jeweils multipliziert mit Sensitivity Value, um degrees per second zu erhalten, siehe datasheet S. 27
  80024b0:	197b      	adds	r3, r7, r5
  80024b2:	78db      	ldrb	r3, [r3, #3]
  80024b4:	021b      	lsls	r3, r3, #8
@@ -4823,7 +4823,7 @@ void gyroWerteAuslesen (int16_t *x_axis, int16_t *y_axis, int16_t *z_axis){
  80024c8:	687b      	ldr	r3, [r7, #4]
  80024ca:	2200      	movs	r2, #0
  80024cc:	801a      	strh	r2, [r3, #0]
-			*z_axis = (buf[5] << 8) | buf[6];
+			*z_axis = ((buf[5] << 8) | buf[6]);//*15.625;
  80024ce:	187b      	adds	r3, r7, r1
  80024d0:	795b      	ldrb	r3, [r3, #5]
  80024d2:	021b      	lsls	r3, r3, #8
