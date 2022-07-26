@@ -27,6 +27,7 @@
 #include <FXOS8700CQ.h>
 #include <stdbool.h>
 #include <math.h>
+#include <stdlib.h>
 
 /* USER CODE END Includes */
 
@@ -48,6 +49,7 @@
  I2C_HandleTypeDef hi2c1;
 
 TIM_HandleTypeDef htim3;
+TIM_HandleTypeDef htim16;
 
 /* USER CODE BEGIN PV */
 
@@ -65,6 +67,7 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_TIM3_Init(void);
+static void MX_TIM16_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -95,16 +98,15 @@ int main(void)
 	//Magnetometer
 	int16_t x_axis_Mag, y_axis_Mag, z_axis_Mag;
 
-	//Initialisiere TARA-Werte
+	//Initialisiere TARA-Ausrichtung und setze sie auf Null
 
-	int16_t x_Tara_Acc, y_Tara_Acc, z_Tara_Acc, x_Tara_Mag, y_Tara_Mag, z_Tara_Mag;
+	double TaraHeading = 0;
 
-	//Setze Tara-Werte auf 1 0 0
-	x_Tara_Mag = 1;
-	y_Tara_Mag = 0;
-	z_Tara_Mag = 0;
+	//Diese Variable misst die Abweichung vom Nullpunkt in Tausendstel Grad
+	int16_t Abweichung_milliGrad;
 
-	double Ausrichtung;
+	//Timer-Value-Variable für die blinkenden LEDs
+	uint16_t timer_val = 0xFFF;
 
 
   /* USER CODE END 1 */
@@ -129,11 +131,15 @@ int main(void)
   MX_GPIO_Init();
   MX_I2C1_Init();
   MX_TIM3_Init();
+  MX_TIM16_Init();
   /* USER CODE BEGIN 2 */
 
 //starte Timer
+  //PWM-Timer
   HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_3);
   HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_4);
+  //Blink-Timer
+  HAL_TIM_Base_Start(&htim16);
 
 //LEDS aus
   __HAL_TIM_SET_COMPARE(&htim3,TIM_CHANNEL_3,0);
@@ -183,8 +189,7 @@ int main(void)
 
   //Funktion, umd die Ausrichtung des Sensors zu bestimmen
 
-  double BerechneAusrichtung(int16_t *x_axis_Mag, int16_t *y_axis_Mag, int16_t *z_axis_Mag, int16_t *x_Tara_Mag, int16_t *y_Tara_Mag, int16_t *z_Tara_Mag){
-	  double Abweichung;
+  double BerechneAusrichtung(int16_t *x_axis_Mag, int16_t *y_axis_Mag, double *TaraHeading){
 
 	  //Skalarprodukt von Taravektor [x_Tara_Mag y_Tara_Mag z_Tara_Mag]^T und Nordvektor [x_axis_Mag y_axis_Mag z_axis_Mag]^T
 
@@ -193,9 +198,13 @@ int main(void)
 	  //double BetragMagVec = sqrt((*x_axis_Mag) * (*x_axis_Mag) + (*y_axis_Mag) * (*y_axis_Mag) + (*z_axis_Mag) * (*z_axis_Mag));
 	   //Winkel zwischen TaraVec und MagVec
 	  //Abweichung = acos(skalarprod/(BetragTaraVec*BetragMagVec))*(180/M_PI);
-	  Abweichung = 90 - atan2((double)*y_axis_Mag, (double)*x_axis_Mag) * 180 / M_PI;
-
-	  return Abweichung;
+	  double Azimuth = 90 - atan2((double)*y_axis_Mag, (double)*x_axis_Mag) * 180 / M_PI;
+	  //Berechne Abweichung von per blauem Knopf gewählten Nullpunt.
+	  //TaraHeading ist mit 0 initialisiert, d.h. vor dem ersten Drücken des blauen Knopfes ist Abweichung = Azimuth
+	  double Abweichung = Azimuth - *TaraHeading;
+	  //konvertiert in int für abs-Funktion
+	  int16_t Abweichung_milliGrad = (int16_t)(Abweichung * 1000);
+	  return Abweichung_milliGrad;
   }
 
   /* USER CODE END 2 */
@@ -206,61 +215,71 @@ int main(void)
   while(1){
 	  //Lese Sensorwerte aus
 	  gyroWerteAuslesen(&x_axis, &y_axis, &z_axis);
-	  HAL_Delay(10);
+
  	  FXOS8700CQWerteAuslesen(&x_axis_Mag, &y_axis_Mag, &z_axis_Mag, &x_axis_Acc, &y_axis_Acc, &z_axis_Acc);
 
 
 	  //Prüfe, ob blauer Knopf gedrückt wurde
 	  if (Tara == true){
-
-		  x_Tara_Acc = x_axis_Acc;
-		  y_Tara_Acc = y_axis_Acc;
-		  z_Tara_Acc = z_axis_Acc;
-		  x_Tara_Mag = x_axis_Mag;
-		  y_Tara_Mag = y_axis_Mag;
-		  z_Tara_Mag = z_axis_Mag;
+		  //speichere aktuelle Abweichung von Norden
+		  TaraHeading = 90 - atan2 ((double)y_axis_Mag, (double)x_axis_Mag) * 180 / M_PI;
 		  Tara = false;
 	  }
-	  Ausrichtung = BerechneAusrichtung(&x_axis_Mag, &y_axis_Mag, &z_axis_Mag, &x_Tara_Mag, &y_Tara_Mag, &z_Tara_Mag);
+	  Abweichung_milliGrad = BerechneAusrichtung(&x_axis_Mag, &y_axis_Mag, &TaraHeading);
 
-	  if (Ausrichtung <= 5){
-		  //blinke beide LEDs
-		  __HAL_TIM_SET_COMPARE(&htim3,TIM_CHANNEL_3,511);
-	  }
+//Hier der Code, wenn die LEDs blinken sollen weil die Abweichung kleiner als 5° ist. Je nach Status von Timer 16 springt die if else Abfrage
+//entweder zu "blinkende LEDs AN" oder zu "blinkende LEDs AUS". Blei blinkende LEDs AN wird geprüft, welche LED leuchten muss, und dann entsprechend
+// an/ausgeschaltet
 
-	  HAL_Delay(10);
+	  if ((__HAL_TIM_GET_COUNTER(&htim16) - timer_val) > 100 && abs(Abweichung_milliGrad) <= 5000){
+		  //blinkende LEDs AN
+		  if (z_axis <= 0){
+			  //schalte blaue LED an, z-Achse dreht IM Uhrzeigersinn
 
+			  __HAL_TIM_SET_COMPARE(&htim3,TIM_CHANNEL_3,511);
+			   //setzt Pulsweite für grüne LED auf 0
+			  __HAL_TIM_SET_COMPARE(&htim3,TIM_CHANNEL_4,0);
+			  timer_val = __HAL_TIM_GetCounter(&htim16);
+		  }else{
+			  //schalte grüne LED an, z-Achse dreht GEGEN Uhrzeigersinn
 
-	  if (z_axis >= 0 && Ausrichtung > 5){
-		  // z-Achse wird GEGEN Uhrzeigersinn gedreht
-		  int16_t z_axis_Max = 0x7FFF; //maximaler Wert eines 16-bit signed int
-		  int16_t z = (z_axis*511)/z_axis_Max; //511 ist in der Konfiguration von Tim3 die Zahl, bis zu der gezählt wird.
-
-		  //setzt Pulsweite für grüne LEDauf berechneten %-Wert
-		  __HAL_TIM_SET_COMPARE(&htim3,TIM_CHANNEL_4,z);
-		  //setzt Pulsweite für blaue LED auf 0
+			  __HAL_TIM_SET_COMPARE(&htim3,TIM_CHANNEL_4,511); //setze auf schwach leuchtenden wert
+			  //setzt Pulsweite für blaue LED auf 0
+			  __HAL_TIM_SET_COMPARE(&htim3,TIM_CHANNEL_3,0);
+			  timer_val = __HAL_TIM_GetCounter(&htim16);
+		  }
+	  }else if((__HAL_TIM_GET_COUNTER(&htim16) - timer_val) <= 100 && abs(Abweichung_milliGrad) <= 5000){
+		  //blinkende LEDs AUS
 		  __HAL_TIM_SET_COMPARE(&htim3,TIM_CHANNEL_3,0);
-
-	  }else if (z_axis <= 0 && Ausrichtung > 5){
-		  // z-Achse wird IM Uhrzeigersinn gedreht
-		  int16_t z_axis_Min = -0x8000;	//minimaler Wert eines 16-bit signed int
-		  int16_t z = (z_axis*511)/z_axis_Min;
-		  //setzt Pulsweite für blaue LEDauf berechneten %-Wert
-		  __HAL_TIM_SET_COMPARE(&htim3,TIM_CHANNEL_3,z);
-		  //setzt Pulsweite für grüne LED auf 0
 		  __HAL_TIM_SET_COMPARE(&htim3,TIM_CHANNEL_4,0);
-	  }else{
-		  //do nothing
 	  }
+//Hier der Code, wenn die LEDs dauerleuchten sollen, da die Abweichung >5° ist.
 
+	  if (z_axis >= 0 && abs(Abweichung_milliGrad) > 5000){
+	  		  // z-Achse wird GEGEN Uhrzeigersinn gedreht
+	  		  int16_t z_axis_Max = 0x7FFF; //maximaler Wert eines 16-bit signed int
+	  		  int16_t z = (z_axis*511)/z_axis_Max; //511 ist in der Konfiguration von Tim3 die Zahl, bis zu der gezählt wird.
 
+	  		  //setzt Pulsweite für grüne LEDauf berechneten %-Wert
+	  		  __HAL_TIM_SET_COMPARE(&htim3,TIM_CHANNEL_4,z);
+	  		  //setzt Pulsweite für blaue LED auf 0
+	  		  __HAL_TIM_SET_COMPARE(&htim3,TIM_CHANNEL_3,0);
 
+	  	  }else if (z_axis <= 0 && abs(Abweichung_milliGrad) > 5000){
+	  		  // z-Achse wird IM Uhrzeigersinn gedreht
+	  		  int16_t z_axis_Min = -0x8000;	//minimaler Wert eines 16-bit signed int
+	  		  int16_t z = (z_axis*511)/z_axis_Min;
+	  		  //setzt Pulsweite für blaue LEDauf berechneten %-Wert
+	  		  __HAL_TIM_SET_COMPARE(&htim3,TIM_CHANNEL_3,z);
+	  		  //setzt Pulsweite für grüne LED auf 0
+	  		  __HAL_TIM_SET_COMPARE(&htim3,TIM_CHANNEL_4,0);
+	  	  }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
 
 
-  }
+  }//Ende while-Schleife
   /* USER CODE END 3 */
 }
 
@@ -409,14 +428,13 @@ static void MX_TIM3_Init(void)
     Error_Handler();
   }
   sConfigOC.OCMode = TIM_OCMODE_PWM1;
-  sConfigOC.Pulse = 50;
+  sConfigOC.Pulse = 1;
   sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
   sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
   if (HAL_TIM_PWM_ConfigChannel(&htim3, &sConfigOC, TIM_CHANNEL_3) != HAL_OK)
   {
     Error_Handler();
   }
-  sConfigOC.Pulse = 500;
   if (HAL_TIM_PWM_ConfigChannel(&htim3, &sConfigOC, TIM_CHANNEL_4) != HAL_OK)
   {
     Error_Handler();
@@ -425,6 +443,38 @@ static void MX_TIM3_Init(void)
 
   /* USER CODE END TIM3_Init 2 */
   HAL_TIM_MspPostInit(&htim3);
+
+}
+
+/**
+  * @brief TIM16 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM16_Init(void)
+{
+
+  /* USER CODE BEGIN TIM16_Init 0 */
+
+  /* USER CODE END TIM16_Init 0 */
+
+  /* USER CODE BEGIN TIM16_Init 1 */
+
+  /* USER CODE END TIM16_Init 1 */
+  htim16.Instance = TIM16;
+  htim16.Init.Prescaler = 65536-1;
+  htim16.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim16.Init.Period = 250;
+  htim16.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim16.Init.RepetitionCounter = 0;
+  htim16.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
+  if (HAL_TIM_Base_Init(&htim16) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM16_Init 2 */
+
+  /* USER CODE END TIM16_Init 2 */
 
 }
 
@@ -456,10 +506,11 @@ static void MX_GPIO_Init(void)
 
 /* USER CODE BEGIN 4 */
 /* Interrupt Funktionen */
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)//, volatile int16_t x_Tara_Acc, int16_t x_axis_Acc
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
     if(GPIO_Pin == GPIO_PIN_0) // If The INT Source Is EXTI Line9 (A9 Pin)
     {
+    	//kurzer Interrupt setzt Tara Wert auf true, damit dann in der while Schleife die aktuelle Ausrichtung gespeichert werden kann
     	Tara = true;
     }
 }
