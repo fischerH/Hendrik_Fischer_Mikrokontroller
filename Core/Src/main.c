@@ -53,11 +53,11 @@ TIM_HandleTypeDef htim16;
 
 /* USER CODE BEGIN PV */
 
-//Initialisierung der Variable, die vom Interrupt gesetzt wird
+//Initialisierung der Variablen, die vom Interrupt gesetzt werden
 
-//volatile, damit sie vom Compiler nicht wegoptimiert wird
-volatile bool Tara = false;
-
+//volatile, damit sie vom Compiler nicht wegoptimiert werden
+volatile bool Tara = false; //für den Tara-Interrupt
+volatile bool LEDistAN = true;//Für den TIM16 Interrupt, der die LEDs blinken lässt wenn Auslenkung < 5°
 
 
 /* USER CODE END PV */
@@ -105,8 +105,6 @@ int main(void)
 	//Diese Variable misst die Abweichung vom Nullpunkt in Tausendstel Grad
 	int16_t Abweichung_milliGrad;
 
-	//Timer-Value-Variable für die blinkenden LEDs
-	uint16_t timer_val = 0xFFF;
 
 
   /* USER CODE END 1 */
@@ -138,8 +136,7 @@ int main(void)
   //PWM-Timer
   HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_3);
   HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_4);
-  //Blink-Timer
-  HAL_TIM_Base_Start(&htim16);
+
 
 //LEDS aus
   __HAL_TIM_SET_COMPARE(&htim3,TIM_CHANNEL_3,0);
@@ -227,32 +224,36 @@ int main(void)
 	  }
 	  Abweichung_milliGrad = BerechneAusrichtung(&x_axis_Mag, &y_axis_Mag, &TaraHeading);
 
-//Hier der Code, wenn die LEDs blinken sollen weil die Abweichung kleiner als 5° ist. Je nach Status von Timer 16 springt die if else Abfrage
-//entweder zu "blinkende LEDs AN" oder zu "blinkende LEDs AUS". Blei blinkende LEDs AN wird geprüft, welche LED leuchten muss, und dann entsprechend
-// an/ausgeschaltet
+//Hier der Code, wenn die LEDs blinken sollen weil die Abweichung kleiner als 5° ist.
 
-	  if ((__HAL_TIM_GET_COUNTER(&htim16) - timer_val) > 100 && abs(Abweichung_milliGrad) <= 5000){
-		  //blinkende LEDs AN
-		  if (z_axis <= 0){
-			  //schalte blaue LED an, z-Achse dreht IM Uhrzeigersinn
+	  if (abs(Abweichung_milliGrad) <= 5000){
 
-			  __HAL_TIM_SET_COMPARE(&htim3,TIM_CHANNEL_3,511);
-			   //setzt Pulsweite für grüne LED auf 0
-			  __HAL_TIM_SET_COMPARE(&htim3,TIM_CHANNEL_4,0);
-			  timer_val = __HAL_TIM_GetCounter(&htim16);
+
+		  HAL_TIM_Base_Start_IT(&htim16);//starte den Timer, der für das Blinken der LEDs da ist, in Interrupt-Modus
+
+		  if (z_axis >= 0){
+			  // z-Achse wird GEGEN Uhrzeigersinn gedreht -> grüne LED muss blinken, blaue LED aus
+			  __HAL_TIM_SET_COMPARE(&htim3,TIM_CHANNEL_3,0); //blau aus
+			  if (LEDistAN == true){
+				  __HAL_TIM_SET_COMPARE(&htim3,TIM_CHANNEL_4,511); //grün an
+			  }else{
+				  __HAL_TIM_SET_COMPARE(&htim3,TIM_CHANNEL_4,0); //grün aus
+			  }
 		  }else{
-			  //schalte grüne LED an, z-Achse dreht GEGEN Uhrzeigersinn
-
-			  __HAL_TIM_SET_COMPARE(&htim3,TIM_CHANNEL_4,511); //setze auf schwach leuchtenden wert
-			  //setzt Pulsweite für blaue LED auf 0
-			  __HAL_TIM_SET_COMPARE(&htim3,TIM_CHANNEL_3,0);
-			  timer_val = __HAL_TIM_GetCounter(&htim16);
+			  	  // z-Achse wird IM Uhrzeigersinn gedreht -> blaue LED muss blinken, grüne LED aus
+				  __HAL_TIM_SET_COMPARE(&htim3,TIM_CHANNEL_4,0); //grün aus
+				  if (LEDistAN == true){
+					  __HAL_TIM_SET_COMPARE(&htim3,TIM_CHANNEL_3,511); //blau an
+				  }else{
+					  __HAL_TIM_SET_COMPARE(&htim3,TIM_CHANNEL_3,0); //blau aus
+				  }
+			}
+		  }else{
+			  HAL_TIM_Base_Stop_IT(&htim16);
+			  //stoppe den Blink-Timer
 		  }
-	  }else if((__HAL_TIM_GET_COUNTER(&htim16) - timer_val) <= 100 && abs(Abweichung_milliGrad) <= 5000){
-		  //blinkende LEDs AUS
-		  __HAL_TIM_SET_COMPARE(&htim3,TIM_CHANNEL_3,0);
-		  __HAL_TIM_SET_COMPARE(&htim3,TIM_CHANNEL_4,0);
-	  }
+
+
 //Hier der Code, wenn die LEDs dauerleuchten sollen, da die Abweichung >5° ist.
 
 	  if (z_axis >= 0 && abs(Abweichung_milliGrad) > 5000){
@@ -462,9 +463,9 @@ static void MX_TIM16_Init(void)
 
   /* USER CODE END TIM16_Init 1 */
   htim16.Instance = TIM16;
-  htim16.Init.Prescaler = 65536-1;
+  htim16.Init.Prescaler = 48000-1;
   htim16.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim16.Init.Period = 250;
+  htim16.Init.Period = 250-1;
   htim16.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim16.Init.RepetitionCounter = 0;
   htim16.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
@@ -505,7 +506,7 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-/* Interrupt Funktionen */
+// Interrupt Funktionen
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
     if(GPIO_Pin == GPIO_PIN_0) // If The INT Source Is EXTI Line9 (A9 Pin)
@@ -514,7 +515,21 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
     	Tara = true;
     }
 }
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
+	if (htim == &htim16){ //Prüfe, ob es tatsächlich Timer 16 war, der den Interrupt ausgelöst hat
 
+		//jetzt wird der LEDistAN Wert umgeschaltet; entweder von Wahr auf Falsch oder von Falsch auf Wahr.
+		//Bei jedem Durchlauf des Counters wird somit ein Interrupt ausgelöst. In der Hauptschleife kann somit entweder Die LED an- oder ausgeschaltet werden,
+		//je nachdem welchen Wert LEDistAN annimmt.
+		if (LEDistAN == true){
+
+			LEDistAN = false;
+		}else{
+			LEDistAN = true;
+		}
+		 //
+	}
+}
 /* USER CODE END 4 */
 
 /**
