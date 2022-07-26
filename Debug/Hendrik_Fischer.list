@@ -5734,7 +5734,7 @@ static void MX_TIM3_Init(void)
  8002a98:	4b31      	ldr	r3, [pc, #196]	; (8002b60 <MX_TIM3_Init+0x108>)
  8002a9a:	2200      	movs	r2, #0
  8002a9c:	609a      	str	r2, [r3, #8]
-  htim3.Init.Period = 511;
+  htim3.Init.Period = 512-1;
  8002a9e:	4b30      	ldr	r3, [pc, #192]	; (8002b60 <MX_TIM3_Init+0x108>)
  8002aa0:	4a31      	ldr	r2, [pc, #196]	; (8002b68 <MX_TIM3_Init+0x110>)
  8002aa2:	60da      	str	r2, [r3, #12]
