@@ -195,10 +195,10 @@ int main(void)
 	  //double BetragMagVec = sqrt((*x_axis_Mag) * (*x_axis_Mag) + (*y_axis_Mag) * (*y_axis_Mag) + (*z_axis_Mag) * (*z_axis_Mag));
 	   //Winkel zwischen TaraVec und MagVec
 	  //Abweichung = acos(skalarprod/(BetragTaraVec*BetragMagVec))*(180/M_PI);
-	  double Azimuth = 90 - atan2((double)*y_axis_Mag, (double)*x_axis_Mag) * 180 / M_PI;
+	  double Azimut = 90 - atan2((double)*y_axis_Mag, (double)*x_axis_Mag) * 180 / M_PI;
 	  //Berechne Abweichung von per blauem Knopf gewählten Nullpunt.
-	  //TaraHeading ist mit 0 initialisiert, d.h. vor dem ersten Drücken des blauen Knopfes ist Abweichung = Azimuth
-	  double Abweichung = Azimuth - *TaraHeading;
+	  //TaraHeading ist mit 0 initialisiert, d.h. vor dem ersten Drücken des blauen Knopfes ist Abweichung = Azimut
+	  double Abweichung = Azimut - *TaraHeading;
 	  //konvertiert in int für abs-Funktion
 	  int16_t Abweichung_milliGrad = (int16_t)(Abweichung * 1000);
 	  return Abweichung_milliGrad;

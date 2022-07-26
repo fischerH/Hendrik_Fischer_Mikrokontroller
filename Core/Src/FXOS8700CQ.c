@@ -20,7 +20,7 @@ bool InitialisiereFXOS8700CQ(){
 
 	buf[0] = FXOS8700CQ_CTRL_REG1;
 	buf[1] = 0b00000000; //letztes Bit gibt Standby-Modus an
-	ret = HAL_I2C_Master_Transmit(&hi2c1, ADDR_Magnetometer, buf, 2, HAL_MAX_DELAY);
+	ret = HAL_I2C_Master_Transmit(&hi2c1, ADDR_Magnetometer, buf, 2, 1000);
 
 	//konfiguriere M_CTRL_REG1
 	buf[0] = FXOS8700CQ_M_CTRL_REG1;
@@ -31,7 +31,7 @@ bool InitialisiereFXOS8700CQ(){
 			//Bit 1-0:	11 gewählt für Hybrid Mode
 	buf[1] = 0b10001111;
 
-	ret = HAL_I2C_Master_Transmit(&hi2c1, ADDR_Magnetometer, buf, 2, HAL_MAX_DELAY);
+	ret = HAL_I2C_Master_Transmit(&hi2c1, ADDR_Magnetometer, buf, 2, 1000);
 
 		//prüfe, ob M_CTRL_REG1 korrekt konfiguriert ist
 
@@ -52,7 +52,7 @@ bool InitialisiereFXOS8700CQ(){
 			//Bit 1-0: Magnetic sensor reset (degaussing) Frequenz; wähle Standardwert 00
 	buf[1] = 0b00100000;
 
-	ret = HAL_I2C_Master_Transmit(&hi2c1, ADDR_Magnetometer, buf, 2, HAL_MAX_DELAY);
+	ret = HAL_I2C_Master_Transmit(&hi2c1, ADDR_Magnetometer, buf, 2, 1000);
 
 	ret = HAL_I2C_Mem_Read(&hi2c1, ADDR_Magnetometer, FXOS8700CQ_M_CTRL_REG2, 1, buf, 1, 1000);
 
