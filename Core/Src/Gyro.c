@@ -13,26 +13,48 @@
 bool InitialisiereGyro(){
 	HAL_StatusTypeDef ret;
 	uint8_t buf[15];
-	buf[0] = CTRL_REG1;
-	buf[1] = 0b00000000;
 
+
+
+	//versetze Sensor in Standby, um Control Register 1 ändern zu können ohne die Genauigkeit der Output Daten zu gefähreden -> Data Sheet S.45
+
+	buf[0] = 0b00000000;
+	ret = HAL_I2C_Mem_Write(&hi2c1, ADDR_Gyro, CTRL_REG1, 1, buf, 1, 1000);
+	//konfiguriere Control Register 0
+
+	buf[0] = CTRL_REG0;
+
+	//Bit 7-6: LPF cutoff frequency wähle 01 für 16Hz beo ODR = 100 Hz		Bit 5: SPI Wire mode selection- unwichtig da I2C benutzt; wähle 0
+	//Bit 4-3: High-pass filter cutoff frequency [00] irrelevant, da Bit 2 = 0		Bit 2: High-pass filter enable [0]
+	//Bit 1-0: Full-scale range selection; wähle  10 für Range = +-500dps und Sensitivität = 15,625 mdps/LSB
+	buf[1] = 0b01000010;
+
+	ret = HAL_I2C_Master_Transmit(&hi2c1, ADDR_Gyro, buf, 2, 1000);
+
+	ret = HAL_I2C_Mem_Read(&hi2c1, ADDR_Gyro, CTRL_REG0, 1, buf, 1, 1000);
+
+	if ( ret != HAL_OK || buf[0] != 0b01000010) {
+		//prüfe ob I2C-Kommunikation geklappt hat und ob CTRL_Reg0 richtig konfiguriert ist
+		strcpy((char*)buf, "INIT ERROR");
+		return false;
+	}
 	//konfiguriere Control Register 1
-		//versetze Sensor in Standby, um Control Register 1 ändern zu können ohne die Genauigkeit der Output Daten zu gefähreden -> Data Sheet S.45
-	ret = HAL_I2C_Master_Transmit(&hi2c1, ADDR_Gyro, buf, 2, HAL_MAX_DELAY);
-
-		//konfiguriere Wert, der in CTRL_REG1 geschrieben werden soll
+	buf[0] = CTRL_REG1;
 	buf[1] = 0b00001111; //Bit7: Unused		Bit6: Reset 0/1		Bit5: SelfTest 0/1		Bit4-2: Output Data Rate 011 für 100 Hz gewählt		Bit 1-0: Active Mode gewählt mit 11
 
-
-	ret = HAL_I2C_Master_Transmit(&hi2c1, ADDR_Gyro, buf, 2, HAL_MAX_DELAY);
+		//aktiviere Sensor und konfiguriere CTRl_Reg1
+	ret = HAL_I2C_Master_Transmit(&hi2c1, ADDR_Gyro, buf, 2, 1000);
 
 
 	//überprüfe, ob Control Register 1 richtig konfiguriert wurde
 
 	ret = HAL_I2C_Mem_Read(&hi2c1, ADDR_Gyro, CTRL_REG1, 1, buf, 1, 1000);
-	//Kopiere Inhalt von buf[0] in buf[1]
 
-	buf[1] = buf [0];
+	if ( ret != HAL_OK || buf[0] != 0b00001111) {
+		//prüfe ob I2C-Kommunikation geklappt hat und ob CTRL_Reg1 richtig konfiguriert ist
+		strcpy((char*)buf, "INIT ERROR");
+		return false;
+		}
 
 	//lese Device Identifier
 
@@ -40,15 +62,12 @@ bool InitialisiereGyro(){
 
 
 
-		if ( ret == HAL_OK && buf[0] == GyroDeviceID && buf[1] == 0b00001111) {
-			//kein Hal-Fehler, GyroDeviceID ist korrekt, CTRL-Reg 1 hat richtige Werte
-			return true;
-
-		}else{
-			strcpy((char*)buf, "INIT ERROR");
-			return false;
+	if ( ret != HAL_OK || buf[0] != GyroDeviceID) {
+		//prüfe ob I2C-Kommunikation geklappt hat und ob die Device ID korrekt ist
+		strcpy((char*)buf, "INIT ERROR");
+		return false;
 		}
-
+return true;
 }
 
 

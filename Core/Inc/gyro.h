@@ -27,6 +27,7 @@ extern "C" {
 #define ADDR_Gyro (0x21 << 1) //Initialisiere Adresse von Gyro Sensor. Wert aus Datenblatt. Shift ein Bit da I2C 7 Bit Adresse verwendet und letztes Bit 0 sein muss.
 
 #define Gyro_Status_REG (0x0)
+#define CTRL_REG0 (0x0D)
 #define CTRL_REG1 (0x13)
 #define CTRL_REG2 (0x14)
 #define CTRL_REG3 (0x15)

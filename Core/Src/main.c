@@ -404,7 +404,7 @@ static void MX_TIM3_Init(void)
 
   /* USER CODE END TIM3_Init 1 */
   htim3.Instance = TIM3;
-  htim3.Init.Prescaler = 100;
+  htim3.Init.Prescaler = 0;
   htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim3.Init.Period = 511;
   htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
@@ -509,7 +509,7 @@ static void MX_GPIO_Init(void)
 // Interrupt Funktionen
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-    if(GPIO_Pin == GPIO_PIN_0) // If The INT Source Is EXTI Line9 (A9 Pin)
+     if(GPIO_Pin == GPIO_PIN_0) // If The INT Source Is EXTI Line9 (A9 Pin)
     {
     	//kurzer Interrupt setzt Tara Wert auf true, damit dann in der while Schleife die aktuelle Ausrichtung gespeichert werden kann
     	Tara = true;
