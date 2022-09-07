@@ -233,7 +233,7 @@ int main(void)
 
 		  if (z_axis >= -5){
 			  // z-Achse wird GEGEN Uhrzeigersinn gedreht -> grüne LED muss blinken, blaue LED aus
-			  // kleiner Buffer eingebaut, damit beim Stillhalten des sensors nur eine LED blinkt
+			  // kleiner Buffer eingebaut, damit beim Stillhalten des Sensors nur eine LED blinkt
 			  // und das Rauschen des Sensors kein erratisch wechselndes Blinken von blauer
 			  // und grüner LED erzeugt
 			  __HAL_TIM_SET_COMPARE(&htim3,TIM_CHANNEL_3,0); //blau aus

@@ -5246,7 +5246,7 @@ int main(void)
  80027ba:	3305      	adds	r3, #5
  80027bc:	db12      	blt.n	80027e4 <main+0x204>
 			  // z-Achse wird GEGEN Uhrzeigersinn gedreht -> grüne LED muss blinken, blaue LED aus
-			  // kleiner Buffer eingebaut, damit beim Stillhalten des sensors nur eine LED blinkt
+			  // kleiner Buffer eingebaut, damit beim Stillhalten des Sensors nur eine LED blinkt
 			  // und das Rauschen des Sensors kein erratisch wechselndes Blinken von blauer
 			  // und grüner LED erzeugt
 			  __HAL_TIM_SET_COMPARE(&htim3,TIM_CHANNEL_3,0); //blau aus
