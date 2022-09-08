@@ -109,11 +109,11 @@ void FXOS8700CQWerteAuslesen (int16_t *x_axis_Mag, int16_t *y_axis_Mag, int16_t 
 		  ret = HAL_I2C_Master_Receive(&hi2c1, ADDR_Magnetometer, buf, 13, HAL_MAX_DELAY); /*empfange alle 6 Bytes für die Gyrowerte*/
 		if ( ret == HAL_OK ) {
 			*x_axis_Acc = 0;
-			*x_axis_Acc = (((buf[1] << 8) | buf[2])) >> 2; // buf[1] enthält x_MSB; buf[2] enthält x_LSB. Deshalb wird das MSB in die Variable eingesetzt, um 8 bits verschoben, und dann LSB mit logischem Oder verknüpft
+			*x_axis_Acc = (int16_t)(((buf[1] << 8) | buf[2])) >> 2; // buf[1] enthält x_MSB; buf[2] enthält x_LSB. Deshalb wird das MSB in die Variable eingesetzt, um 8 bits verschoben, und dann LSB mit logischem Oder verknüpft
 			*y_axis_Acc = 0;
-			*y_axis_Acc = (((buf[3] << 8) | buf[4])) >> 2; //Accel-Data ist 14bit, deshalb anschleißend BitShift um 2
+			*y_axis_Acc = (int16_t)(((buf[3] << 8) | buf[4])) >> 2; //Accel-Data ist 14bit, deshalb anschleißend BitShift um 2
 			*z_axis_Acc = 0;
-			*z_axis_Acc = (((buf[5] << 8) | buf[6])) >> 2;
+			*z_axis_Acc = (int16_t)(((buf[5] << 8) | buf[6])) >> 2;
 			*x_axis_Mag = 0;
 			*x_axis_Mag = (buf[7] << 8) | buf[8]; // buf[7] enthält x_MSB; buf[2] enthält x_LSB. Deshalb wird das MSB in die Variable eingesetzt, um 8 bits verschoben, und dann LSB mit logischem Oder verknüpft
 			*y_axis_Mag = 0;

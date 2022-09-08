@@ -24,7 +24,7 @@ bool InitialisiereGyro(){
 
 	buf[0] = CTRL_REG0;
 
-	//Bit 7-6: LPF cutoff frequency wähle 01 für 16Hz beo ODR = 100 Hz		Bit 5: SPI Wire mode selection- unwichtig da I2C benutzt; wähle 0
+	//Bit 7-6: LPF cutoff frequency wähle 01 für 16Hz bei ODR = 100 Hz		Bit 5: SPI Wire mode selection- unwichtig da I2C benutzt; wähle 0
 	//Bit 4-3: High-pass filter cutoff frequency [00] irrelevant, da Bit 2 = 0		Bit 2: High-pass filter enable [0]
 	//Bit 1-0: Full-scale range selection; wähle  10 für Range = +-500dps und Sensitivität = 15,625 mdps/LSB
 	buf[1] = 0b01000010;
@@ -94,7 +94,7 @@ void gyroWerteAuslesen (int16_t *x_axis, int16_t *y_axis, int16_t *z_axis){
 			*x_axis = 0;
 			*x_axis = ((buf[1] << 8) | buf[2]);//*15.625; /* buf[1] enthält x_MSB; buf[2] enthält x_LSB. Deshalb wird das MSB in die Variable eingesetzt, um 8 bits verschoben, und dann LSB mit logischem Oder verknüpft*/
 			*y_axis = 0;
-			*y_axis = ((buf[3] << 8) | buf[4]);//*15.625; //jeweils multipliziert mit Sensitivity Value, um degrees per second zu erhalten, siehe datasheet S. 27
+			*y_axis = ((buf[3] << 8) | buf[4]);// * 15.625; //Nur Rohdaten. Jeweils multipliziert mit Sensitivity Value, um milli-degrees per second zu erhalten, siehe datasheet S. 27 bzw. Tabell 35 (+-500dps gewählt)
 			*z_axis = 0;
 			*z_axis = ((buf[5] << 8) | buf[6]);//*15.625;
 

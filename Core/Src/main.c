@@ -87,10 +87,11 @@ int main(void)
 
 
 
-	//Initialisierung der Sensor-Rohdaten-Variablen für Gyroskop, Beschleunigungssensor und Magnetometer
+	//Initialisierung der Sensor-Daten-Variablen für Gyroskop, Beschleunigungssensor und Magnetometer
 
 	//Gyro
 	int16_t x_axis, y_axis, z_axis;
+	double x_axis_dps,  y_axis_dps,  z_axis_dps;
 
 	//Accelerometer
 	int16_t x_axis_Acc, y_axis_Acc, z_axis_Acc;
@@ -212,6 +213,10 @@ int main(void)
   while(1){
 	  //Lese Sensorwerte aus
 	  gyroWerteAuslesen(&x_axis, &y_axis, &z_axis);
+	  	  //rechne Gyro-Rohdaten in Grad pro Sekunde um
+	  x_axis_dps = (double)(x_axis*15.625/1000);
+	  y_axis_dps = (double)(y_axis*15.625/1000);
+	  z_axis_dps = (double)(z_axis*15.625/1000);
 
  	  FXOS8700CQWerteAuslesen(&x_axis_Mag, &y_axis_Mag, &z_axis_Mag, &x_axis_Acc, &y_axis_Acc, &z_axis_Acc);
 
@@ -231,7 +236,7 @@ int main(void)
 
 		  HAL_TIM_Base_Start_IT(&htim16);//starte den Timer, der für das Blinken der LEDs da ist, in Interrupt-Modus
 
-		  if (z_axis >= -5){
+		  if (z_axis_dps >= -1){
 			  // z-Achse wird GEGEN Uhrzeigersinn gedreht -> grüne LED muss blinken, blaue LED aus
 			  // kleiner Buffer eingebaut, damit beim Stillhalten des Sensors nur eine LED blinkt
 			  // und das Rauschen des Sensors kein erratisch wechselndes Blinken von blauer
@@ -259,20 +264,20 @@ int main(void)
 
 //Hier der Code, wenn die LEDs dauerleuchten sollen, da die Abweichung >5° ist.
 
-	  if (z_axis >= 0 && abs(Abweichung_milliGrad) > 5000){
+	  if (z_axis_dps >= 0 && abs(Abweichung_milliGrad) > 5000){
 	  		  // z-Achse wird GEGEN Uhrzeigersinn gedreht
-	  		  int16_t z_axis_Max = 0x7FFF; //maximaler Wert eines 16-bit signed int
-	  		  int16_t z = (z_axis*511)/z_axis_Max; //511 ist in der Konfiguration von Tim3 die Zahl, bis zu der gezählt wird.
+	  		  int16_t z_axis_Max = 500; //maximaler Wert der Drehrate
+	  		  int16_t z = (z_axis_dps*511)/z_axis_Max; //511 ist in der Konfiguration von Tim3 die Zahl, bis zu der gezählt wird.
 
 	  		  //setzt Pulsweite für grüne LEDauf berechneten %-Wert
 	  		  __HAL_TIM_SET_COMPARE(&htim3,TIM_CHANNEL_4,z);
 	  		  //setzt Pulsweite für blaue LED auf 0
 	  		  __HAL_TIM_SET_COMPARE(&htim3,TIM_CHANNEL_3,0);
 
-	  	  }else if (z_axis <= 0 && abs(Abweichung_milliGrad) > 5000){
+	  	  }else if (z_axis_dps <= 0 && abs(Abweichung_milliGrad) > 5000){
 	  		  // z-Achse wird IM Uhrzeigersinn gedreht
-	  		  int16_t z_axis_Min = -0x8000;	//minimaler Wert eines 16-bit signed int
-	  		  int16_t z = (z_axis*511)/z_axis_Min;
+	  		  int16_t z_axis_Min = -500;	//minimaler Wert der Drehrate
+	  		  int16_t z = (z_axis_dps*511)/z_axis_Min;
 	  		  //setzt Pulsweite für blaue LEDauf berechneten %-Wert
 	  		  __HAL_TIM_SET_COMPARE(&htim3,TIM_CHANNEL_3,z);
 	  		  //setzt Pulsweite für grüne LED auf 0
