@@ -236,7 +236,7 @@ int main(void)
 
 		  HAL_TIM_Base_Start_IT(&htim16);//starte den Timer, der für das Blinken der LEDs da ist, in Interrupt-Modus
 
-		  if (z_axis_dps >= -1){
+		  if (z_axis_dps >= -0.2){
 			  // z-Achse wird GEGEN Uhrzeigersinn gedreht -> grüne LED muss blinken, blaue LED aus
 			  // kleiner Buffer eingebaut, damit beim Stillhalten des Sensors nur eine LED blinkt
 			  // und das Rauschen des Sensors kein erratisch wechselndes Blinken von blauer
